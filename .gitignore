@@ -1,0 +1,13 @@
+venv/
+PPT/*.*
+PPT/
+data/*.*
+figures/*.*
+__pycache__/carteira_fundo_auto.cpython-310.pyc
+__pycache__/db_functions.cpython-310.pyc
+__pycache__/
+.env
+cvm_fia/gráficos/__pycache__/db_functions.cpython-310.pyc
+cvm_fia/gráficos/__pycache__/sinonimos.cpython-310.pyc
+cvm_fim/gráficos/__pycache__/db_functions.cpython-310.pyc
+cvm_fim/gráficos/__pycache__/sinonimos.cpython-310.pyc
