@@ -12,7 +12,7 @@ from conta_reunioes import make_numero_reunioes_fig
 
 
 template_macro = 'Template.pptx'
-endDate = datetime.strptime("2023-12-31","%Y-%m-%d")
+endDate = datetime.strptime("2023-12-29","%Y-%m-%d")
 
 def decode_layout(slide : Slide)-> tuple[list,list,list]:
     shape_dict={}
