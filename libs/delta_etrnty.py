@@ -46,11 +46,32 @@ def calc_retorno_composto_acumulado(grupo):
 # Função para calcular o retorno composto acumulado de cada métrica
 def calc_retorno_composto_acumulado_peer(grupo):
     # Garantir que os dados estão em ordem cronológica
-    grupo = grupo.sort_values('ANO_MES')
-    grupo['RETORNO_COMPOSTO_ACUMULADO_PEER'] = (
-        1 + grupo['RETORNO_PEER']).cumprod() - 1
-    grupo['RETORNO_COMPOSTO_ACUMULADO_PESO'] = (
-        1 + grupo['CONTRIBUICAO']).cumprod() - 1
+    grupo.sort_values('ANO_MES', inplace=True)
+
+    # Inicializa as colunas para o cálculo do retorno composto acumulado
+    grupo['RETORNO_COMPOSTO_ACUMULADO_PEER'] = 0
+    grupo['RETORNO_COMPOSTO_ACUMULADO_PESO'] = 0
+
+    # Variável para armazenar o retorno acumulado do ano atual, reinicia para cada novo ano
+    retorno_acumulado_peer = 1
+    retorno_acumulado_peso = 1
+
+    # Ano do primeiro registro no grupo
+    ano_anterior = grupo.iloc[0]['ANO_MES'].year
+
+    for index, row in grupo.iterrows():
+        # Se o ano da linha atual for diferente do 'ano_anterior', reinicia os cálculos
+        if row['ANO_MES'].year != ano_anterior:
+            retorno_acumulado_peer = 1
+            retorno_acumulado_peso = 1
+            ano_anterior = row['ANO_MES'].year
+
+        retorno_acumulado_peer *= (1 + row['RETORNO_PEER'])
+        retorno_acumulado_peso *= (1 + row['CONTRIBUICAO'])
+
+        grupo.at[index, 'RETORNO_COMPOSTO_ACUMULADO_PEER'] = retorno_acumulado_peer - 1
+        grupo.at[index, 'RETORNO_COMPOSTO_ACUMULADO_PESO'] = retorno_acumulado_peso - 1
+
     return grupo
 
 # Função para filtrar por período MTD ou YTD

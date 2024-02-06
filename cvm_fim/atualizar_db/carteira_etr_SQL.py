@@ -94,7 +94,7 @@ for date in df_dates['DT_COMPTC']:
     fundos = pd.concat(
         [transformed_fund["CNPJ_FUNDO"], transformed_fund["CNPJ_FUNDO_COTA"]]).unique().tolist()
     start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
-    end_date = datetime.strptime("01-03-2024", "%m-%d-%Y")
+    end_date = datetime.strptime("03-31-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
         "PX_LAST"], "MONTHLY")
 
