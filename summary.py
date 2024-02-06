@@ -162,7 +162,7 @@ def get_changes_chart(title: str, start_date:datetime.datetime, end_date:datetim
     #sort dataframe by values
     rets=rets.sort_values(ascending=True)  #type:ignore
 
-    chart_colors=[colors[6] if i =="Etrnty" else (colors[7] if (i=="IBX" or i=="IFMM") else (colors[0] if rets.loc[i]>rets["Etrnty"] else colors[1])) for i in rets.index]
+    chart_colors=[colors[6] if i =="Etrnty" else (colors[7] if (i=="IBX" or i=="IFMM" or i=="CDI") else (colors[0] if rets.loc[i]>rets["Etrnty"] else colors[1])) for i in rets.index]
 
     #place value on top of bars, format as % tilted 90 degrees
     texts=[str(round(rets.loc[i]*100,1))+"%" for i in rets.index]
@@ -216,6 +216,7 @@ def make_summary_figs(end_date:datetime.datetime):
 
     print("Make summary figs running...")
     start_date=datetime.datetime.strptime("2022-12-30","%Y-%m-%d")
+    YTD_date=datetime.datetime(2023,12,29)
 
     it={"eon":peers_eon,"evo":peers_evo}
     tit={"eon":"Multimercado","evo":"Ações"}
@@ -232,7 +233,7 @@ def make_summary_figs(end_date:datetime.datetime):
                 s+="\n"+i
             raise ValueError(s)
 
-        fig=get_changes_chart(tit[k]+" - Peformance YTD",start_date,end_date,df,it[k])
+        fig=get_changes_chart(tit[k]+" - Peformance YTD",YTD_date,end_date,df,it[k])
         if os.path.exists(os.path.join(".","figures")):
             fig.write_image(os.path.join(".","figures",k+"_YTD.png"))
             print("Saved image:"+os.path.join(".","figures",k+"_YTD.png"))

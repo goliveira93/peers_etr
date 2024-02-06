@@ -12,7 +12,7 @@ from conta_reunioes import make_numero_reunioes_fig
 
 
 template_macro = 'Template.pptx'
-endDate = datetime.strptime("2023-12-31","%Y-%m-%d")
+endDate = datetime.strptime("2024-01-31","%Y-%m-%d")
 
 def decode_layout(slide : Slide)-> tuple[list,list,list]:
     shape_dict={}
@@ -146,6 +146,7 @@ if __name__=="__main__":
 
         #Gera heatimap com posições dos concorrentes
         df=gera_df(fund,"MTD",False)
+        df=df[df["Gestor"].isin(gestores)]
         make_heatmap(fund,df)
         slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_"+slide_top_color))
         slide.shapes.title.text = "PEERS - "+fund
