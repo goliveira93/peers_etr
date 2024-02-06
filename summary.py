@@ -211,8 +211,8 @@ def get_beta_chart(title: str, start_date:datetime.datetime, end_date:datetime.d
     return fig
 
 def make_summary_figs(end_date:datetime.datetime):
-    peers_evo=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIAS]+[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
-    peers_eon=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIMS]+[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"} ]
+    peers_evo=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIAS if i[1]!="São João"]+[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
+    peers_eon=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIMS if i[1]!="São João"]+[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"} ]
 
     print("Make summary figs running...")
     start_date=datetime.datetime.strptime("2022-12-30","%Y-%m-%d")
