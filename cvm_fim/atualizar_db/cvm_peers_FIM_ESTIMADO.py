@@ -53,7 +53,8 @@ calendario = Brazil()
 df['DT_COMPTC'] = df['DT_COMPTC'].apply(ajustar_data)
 
 hoje = datetime.now()
-ultimo_dia_mes_anterior = datetime(2023, 9, 30)  # Seu último ponto de dados é 30/09/2023
+ultimo_dia_mes_anterior = datetime(2023, 10, 31)  # Seu último ponto de dados é 30/09/2023
+
 
 datas_desejadas = []
 
@@ -78,7 +79,9 @@ for mes in range(11, 14):  # Loop de novembro (11) a janeiro (13) do ano seguint
 for data in datas_desejadas:
     print(data.strftime('%Y-%m-%d'))
 
+
 # Verifique os prints para confirmar se as datas estão sendo calculadas corretamente
+
 
 novas_linhas = []
 ultimas_linhas = df[df['DT_COMPTC'] == df['DT_COMPTC'].max()]
@@ -96,7 +99,7 @@ df['DT_COMPTC'] = df['DT_COMPTC'] + BMonthEnd(0)
 
 fundos = pd.concat([df["CNPJ_FUNDO"], df["CNPJ_FUNDO_COTA"]]).unique().tolist()
 start_date = datetime.strptime("06-30-2022", "%m-%d-%Y")
-end_date = datetime.strptime("12-30-2023", "%m-%d-%Y")
+end_date = datetime.strptime("03-01-2024", "%m-%d-%Y")
 q = QuantumHistoricalData(start_date, end_date, fundos, ["PX_LAST"], "MONTHLY")
 precos = q.getData()
 precos = precos.droplevel(1, axis=1)
