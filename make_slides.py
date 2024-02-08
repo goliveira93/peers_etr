@@ -136,7 +136,7 @@ if __name__=="__main__":
         print(e)
         pass
     layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
-    gestores = ["Portofino", "Taler", "Etrnty", "XPA", "Mandatto", "Consenso", "Pragma", "Vitra", "Brain", "JBFO", "Wright", "G5", "Warren"]
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
 
     print("Gerando gráficos de comparação")
     for fund, tipo, prefix, slide_top_color in zip(["EVO","EON"],["Ações","Multimercado"],["FIA","FIM"],["gray","blue"]):
