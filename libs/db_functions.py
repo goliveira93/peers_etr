@@ -4,7 +4,7 @@ Cria conexão com o banco de dados e a variável de sessão: CVM_datafeed_sessio
 # pylint: disable=invalid-name
 from datetime import datetime
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import create_engine, Integer, String, Date, Float
+from sqlalchemy import create_engine, Integer, String, Date, Float, func
 from sqlalchemy.orm import sessionmaker, mapped_column
 import pandas as pd
 
@@ -118,6 +118,26 @@ def fetch_arquivo_cmv(file_date:datetime)->pd.DataFrame:
         df = pd.DataFrame(data)
     return df
 
+def get_fund_return(NM_FUNDO_COTA:str, start_date:datetime, end_date:datetime)->float:
+    with CVM_datafeed_session() as session:
+        results = session.query(
+            CVM_peers.dt_comptc,
+            func.avg(CVM_peers.retorno).label('mean_retorno')
+        ).filter(
+            CVM_peers.nm_fundo_cota == NM_FUNDO_COTA,
+            CVM_peers.dt_comptc >= start_date,
+            CVM_peers.dt_comptc <= end_date  # Assuming you have an end_date variable
+        ).group_by(
+            CVM_peers.dt_comptc
+        ).order_by(
+            CVM_peers.dt_comptc
+        ).all()
+        ret=0
+        for r in results:
+            ret=(1+ret)*(1+r.mean_retorno)-1
+    return ret
+
 if __name__=="__main__":
-    l=fetch_arquivo_cmv(datetime.strptime("2023-06-30","%Y-%m-%d"))
-    print(l)
+    #l=fetch_arquivo_cmv(datetime.strptime("2023-06-30","%Y-%m-%d"))
+    #print(l)
+    print(get_fund_return("Brasil Capital",datetime(2023,1,31),datetime(2023,1,31)))
