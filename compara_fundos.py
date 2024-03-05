@@ -9,14 +9,10 @@ import pandas as pd
 from libs.heatmap import make_heatmap
 from summary import make_summary_figs
 from conta_reunioes import make_numero_reunioes_fig
-from fund_performance import gera_df_performance, tables
-
 
 
 template_macro = 'Template.pptx'
-
-endDate = datetime.strptime("2024-02-29","%Y-%m-%d")
-
+endDate = datetime.strptime("2024-01-31","%Y-%m-%d")
 
 def decode_layout(slide : Slide)-> tuple[list,list,list]:
     shape_dict={}
@@ -127,56 +123,19 @@ if __name__=="__main__":
     import sys 
     prs = Presentation(template_macro)
 
-    #faz grafico com numero de reunioes
-    make_numero_reunioes_fig(endDate)
-    slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("1_grafico"))
-    slide.shapes.title.text = "SELEÇÃO DE GESTORES"
-    fill_1_grafico(slide,{"charts":["Número de interações com gestores"],"files":["reunioes_mes"]},0)
-
-    #faz graficos de barra com performance absoluta YTD, MTD para eon e evo
-    try:
-        make_summary_figs(endDate)
-    except ValueError as e:
-        print(e)
-        pass
-
-    save_files = True
-    for fundo, slide_top_color in zip(["EVO","EON"], ["gray","blue"]):
-        # Gerar o retorno MTD
-        df_mtd, df_ytd = gera_df_performance(fundo, save_files)
-        
-        # Adicionar o slide para o retorno MTD
-        slide_mtd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
-        slide_mtd.shapes.title.text = f"Retornos MTD"
-        fill_1_grafico(slide_mtd, {"charts": ["Performance de Fundos MTD"], "files": [f"{tables[fundo][0]}_retorno_mtd"]}, 0)
-        
-        # Adicionar o slide para o retorno YTD
-        slide_ytd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
-        slide_ytd.shapes.title.text = f"Retornos YTD"
-        fill_1_grafico(slide_ytd, {"charts": ["Performance de Fundos YTD"], "files": [f"{tables[fundo][0]}_retorno_ytd"]}, 0)
-
     layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
-    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
+    gestores = ["Etrnty", "FoF Itau"]
 
     print("Gerando gráficos de comparação")
-
     for fund, tipo, prefix, slide_top_color in zip(["EVO","EON"],["Ações","Multimercado"],["FIA","FIM"],["gray","blue"]):
         #Pega .png dos gráficos de barra (performance absoluta) e coloca no pptx
         slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("performance_comp_"+slide_top_color))
         fill_performance_comp(slide,{"files":[fund.lower()+"_MTD",fund.lower()+"_YTD"],"title":"ETRNTY "+fund})
 
-        #Gera heatimap com posições dos concorrentes
-        df=gera_df(fund,"MTD",False)
-        df=df[df["Gestor"].isin(gestores)]
-        make_heatmap(fund,df)
-        slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_"+slide_top_color))
-        slide.shapes.title.text = "PEERS - "+fund
-        fill_1_grafico(slide,{"charts":["carteira pares"],"files":["heatmap_"+fund]},0)
-
         #gera comparações
         for period in ["MTD","YTD"]:
             try:
-                df_final_ultimo_mes=gera_df(fund,period)
+                df_final_ultimo_mes=gera_df(fund,period,end_date=endDate)
             except Exception as e:
                 print("Erro gerando gráficos para: "+fund)
                 break
@@ -203,9 +162,8 @@ if __name__=="__main__":
                     # Preencher o slide com layouts específicos
                     layouts["2_graficos"](slide, flat_lists)
 
-
             # Salvar a apresentação
-    filename = "Comparacao_"
+    filename = "Comparacao_Individual_"
     prs.save(os.path.join("PPT", filename + endDate.strftime("%m-%y") + ".pptx"))
     print("Apresentação salva como " + filename + endDate.strftime("%m-%y") + ".pptx")
 

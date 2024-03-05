@@ -5,14 +5,14 @@ from pptx.slide import Slide
 from datetime import datetime
 import os.path
 import pandas as pd
-from fund_performance_t import gera_df_performance, tables
+from fund_performance import gera_df_performance, tables
 
 
 template_macro = 'Template.pptx'
 
 # Data de início e fim para o cálculo do retorno
-start_date = datetime.strptime("12-29-2023", "%m-%d-%Y")
-end_date = datetime.strptime("01-31-2024", "%m-%d-%Y")
+start_date = datetime(2023,12,29)
+end_date = datetime(2024,2,29)
 
 def decode_layout(slide: Slide) -> tuple[list, list, list]:
     shape_dict = {}
@@ -42,17 +42,21 @@ if __name__ == "__main__":
     save_files = True
     layouts = {"1_grafico": fill_1_grafico, "comps_slide": fill_1_grafico}
 
-    for fundo in fundos:
-        df_final = gera_df_performance(fundo, save_files)
-        slide_mtd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_gray"))
-        slide_mtd.shapes.title.text = f"Retornos {[fundos]} MTD"
-        fill_1_grafico(slide_mtd, {"charts": ["Performance de Fundos"], "files": [f"{tables[fundo][0]}_retorno_mtd"]}, 0, "MTD")
+    for fundo, slide_top_color in zip(["EVO","EON"], ["gray","blue"]):
+        # Gerar o retorno MTD
+        df_mtd, df_ytd = gera_df_performance(fundo, save_files)
         
-        slide_ytd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_blue"))
-        slide_ytd.shapes.title.text = f"Retornos {[fundos]} YTD"
-        fill_1_grafico(slide_ytd, {"charts": ["Performance de Fundos"], "files": [f"{tables[fundo][0]}_retorno_ytd"]}, 0, "YTD")
-
-            # Salvar a apresentação
+        # Adicionar o slide para o retorno MTD
+        slide_mtd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
+        slide_mtd.shapes.title.text = f"Retornos MTD"
+        fill_1_grafico(slide_mtd, {"charts": ["Performance de Fundos MTD"], "files": [f"{tables[fundo][0]}_retorno_mtd"]}, 0, "MTD")
+        
+        # Adicionar o slide para o retorno YTD
+        slide_ytd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
+        slide_ytd.shapes.title.text = f"Retornos YTD"
+        fill_1_grafico(slide_ytd, {"charts": ["Performance de Fundos YTD"], "files": [f"{tables[fundo][0]}_retorno_ytd"]}, 0, "YTD")
+        
+    # Salvar a apresentação
     filename = "Fund_return"
     prs.save(os.path.join("PPT", filename + end_date.strftime("%m-%y") + ".pptx"))
     print("Apresentação salva como " + filename + end_date.strftime("%m-%y") + ".pptx")

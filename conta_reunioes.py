@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, Integer, String, SmallInteger, Float, Boolean, Date, Text, LargeBinary
 from sqlalchemy.orm import sessionmaker, relationship, mapped_column, declarative_base
 import plotly.graph_objects as go
-import calendar
 from summary import colors #type: ignore
 
 chart_horizontal_layout = dict(
@@ -30,12 +29,6 @@ chart_horizontal_layout = dict(
 
 __estrela_vespertina_base__ = declarative_base()
 
-def last_day_of_month(input_date):
-    year = input_date.year
-    month = input_date.month
-    last_day = calendar.monthrange(year, month)[1]
-    return datetime(year, month, last_day)
-
 class Conta_reunioes(__estrela_vespertina_base__):
     __tablename__="conta_reunioes"
     id = mapped_column(Integer, primary_key=True)
@@ -53,12 +46,12 @@ def make_numero_reunioes_fig(data_final:datetime)->go.Figure:
     port = os.getenv("port")
     database = "estrela_vespertina"
 
-    __estrela_vespertina_engine__  = create_engine("mysql+mysqldb://"+user+":"+password+"@"+host+"/"+database)  #type: ignore
+    __estrela_vespertina_engine__  = create_engine("mysql+mysqldb://"+user+":"+password+"@"+host+"/"+database)
     __estrela_vespertina_base__.metadata.create_all(__estrela_vespertina_engine__)
     Estrela_vespertina_session= sessionmaker(bind=__estrela_vespertina_engine__)
 
     with Estrela_vespertina_session() as session:
-        result = session.query(Conta_reunioes.data, Conta_reunioes.numero_reunioes).filter(Conta_reunioes.data>datetime.strptime("30-06-2023","%d-%m-%Y")).filter(Conta_reunioes.data<=last_day_of_month(data_final)).all()
+        result = session.query(Conta_reunioes.data, Conta_reunioes.numero_reunioes).filter(Conta_reunioes.data>datetime.strptime("30-06-2023","%d-%m-%Y")).filter(Conta_reunioes.data<=data_final).all()
     dates = [datetime.strftime(d[0],"%b-%y") for d in result]
     values = [d[1] for d in result]
     range=[0,max(values)*1.1]
@@ -75,9 +68,8 @@ def make_numero_reunioes_fig(data_final:datetime)->go.Figure:
 
     # Displaying the plot
     fig.write_image(os.path.join(".","figures","reunioes_mes.png"))
-    return fig
 
 if __name__=="__main__":
     import sys
-    make_numero_reunioes_fig(datetime(2023,12,31))
+    make_numero_reunioes_fig()
     sys.exit()

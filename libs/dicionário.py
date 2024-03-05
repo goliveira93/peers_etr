@@ -24,18 +24,24 @@ PEERS = [["26.470.647/0001-70", "Mandatto"],
          ["34.617.263/0001-66", "Brain"],
          ["04.869.180/0001-01", "G5"],
          ["28.777.487/0001-32", "XPA"],
-         # ["32.254.387/0001-07","São João"],
+         ["32.254.387/0001-07","São João"],
          ["47.716.356/0001-90", "Etrnty"],
          ["36.727.650/0001-80", "Portofino"],
-         ["37.227.781/0001-61", "Portofino"]]
+         ["37.227.781/0001-61", "Portofino"],
+        ["42.754.331/0001-67", "FoF Itau"],
+        ["14.096.759/0001-24", "FoF Itau"]
+        ]
 
-data_dir = os.path.join(".", "tools", "dataset_cvm", "data")
+# Define o diretório base subindo um nível a partir de 'libs'
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Define o caminho para o diretório 'data'
+data_dir = os.path.join(base_dir, "data")
 all_masters_list = []
 
 base_pl_file = "cda_fi_PL_2023{}.csv"
 base_blc_file = "cda_fi_BLC_2_2023{}.csv"
 
-for month in range(8, 9):  # Altere para range(1, 12) se você tiver dados para todos os meses
+for month in range(1, 11):  # Altere para range(1, 12) se você tiver dados para todos os meses
     month_str = f"{month:02d}"
     pl_file = base_pl_file.format(month_str)
     blc_file = base_blc_file.format(month_str)

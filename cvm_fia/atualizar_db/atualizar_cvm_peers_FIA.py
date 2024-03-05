@@ -54,11 +54,14 @@ FIAS = [["26.470.647/0001-70", "Mandatto"],
         ["11.389.643/0001-95", "Pragma"],
         ["35.610.530/0001-36", "Brain"],
         ["18.060.935/0001-29", "G5"],
-        #["11.541.999/0001-00", "São João"],
+        ["11.541.999/0001-00", "São João"],
         ["25.098.042/0001-38", "XPA"],
         ["37.227.781/0001-61", "Portofino"],
-        ["47.700.200/0001-10", "Etrnty"]
+        ["47.700.200/0001-10", "Etrnty"],
+        ["14.096.759/0001-24", "FoF Itau"]
         ]
+
+
 
 
 new_feeders = [
@@ -106,7 +109,7 @@ if __name__ == "__main__":
     # result = result.loc[result["Gestor"] == "Mandatto"]  # MUDAR
     fundos = pd.concat(
         [result["CNPJ_FUNDO"], result["CNPJ_FUNDO_COTA"]]).unique().tolist()
-    start_date = datetime.strptime("01-07-2023", "%m-%d-%Y")
+    start_date = datetime.strptime("12-30-2022", "%m-%d-%Y")
     end_date = datetime.strptime("03-01-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
                               "PX_LAST"], "MONTHLY")

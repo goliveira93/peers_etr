@@ -56,9 +56,12 @@ FIMS = [["26.470.596/0001-87", "Mandatto"],
         ["04.869.180/0001-01", "G5"],
         ["28.777.487/0001-32", "XPA"],
         ["36.727.650/0001-80", "Portofino"],
-        #["32.254.387/0001-07","São João"],
-        ["47.716.356/0001-90", "Etrnty"]
+        ["32.254.387/0001-07","São João"],
+        ["47.716.356/0001-90", "Etrnty"],
+        ["42.754.331/0001-67", "FoF Itau"]
         ]
+
+
 
 new_feeders = [
     ["51.162.466/0001-24", "13.962.959/0001-50", "Ibiúna Long Short"]
@@ -104,7 +107,7 @@ if __name__ == "__main__":
     # result = result.loc[result["Gestor"] == "Mandatto"]  # MUDAR
     fundos = pd.concat(
         [result["CNPJ_FUNDO"], result["CNPJ_FUNDO_COTA"]]).unique().tolist()
-    start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
+    start_date = datetime.strptime("01-29-2022", "%m-%d-%Y")
     end_date = datetime.strptime("03-01-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
                               "PX_LAST"], "MONTHLY")

@@ -140,4 +140,4 @@ def get_fund_return(NM_FUNDO_COTA:str, start_date:datetime, end_date:datetime)->
 if __name__=="__main__":
     #l=fetch_arquivo_cmv(datetime.strptime("2023-06-30","%Y-%m-%d"))
     #print(l)
-    print(get_fund_return("Brasil Capital",datetime(2024,1,31),datetime(2024,1,31)))
+    print(get_fund_return("Núcleo",datetime(2023,12,29),datetime(2024,2,29)))
