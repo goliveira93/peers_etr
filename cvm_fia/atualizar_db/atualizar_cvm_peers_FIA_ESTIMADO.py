@@ -53,26 +53,32 @@ calendario = Brazil()
 df['DT_COMPTC'] = df['DT_COMPTC'].apply(ajustar_data)
 
 hoje = datetime.now()
-ultimo_dia_mes_anterior = datetime(2023, 9, 30)  # Seu último ponto de dados é 30/09/2023
+ultimo_dia_mes_anterior = datetime(2023, 10, 31)  # Seu último ponto de dados é 30/09/2023
 
-hoje = datetime.now()
-ultimo_dia_mes_anterior = datetime(2023, 9, 30)  # Seu último ponto de dados é 30/09/2023
 
 datas_desejadas = []
-for mes in range(10, 13):  # Loop de outubro (10) a dezembro (12)
-    # Ajuste para obter o último dia de cada mês corretamente
-    if mes == 12:
-        ultimo_dia_mes = datetime(ultimo_dia_mes_anterior.year, mes, 31)
+
+# Supondo que você esteja começando em outubro de 2023
+ano_atual = 2023
+
+for mes in range(11, 14):  # Loop de novembro (11) a janeiro (13) do ano seguinte
+    if mes > 12:  # Ajuste para janeiro do ano seguinte
+        ano = ano_atual + 1
+        mes_ajustado = 1
     else:
-        ultimo_dia_mes = datetime(ultimo_dia_mes_anterior.year, mes + 1, 1) - timedelta(days=1)
+        ano = ano_atual
+        mes_ajustado = mes
     
-    print(f"Iniciando checagem para o mês: {mes}, data inicial: {ultimo_dia_mes}")  # Debug
-    while not calendario.is_working_day(ultimo_dia_mes) or \
-            (ultimo_dia_mes - timedelta(days=1)).day == 1:
-        ultimo_dia_mes -= timedelta(days=1)
-        print(f"Checando data (loop while): {ultimo_dia_mes}")  # Debug
-    datas_desejadas.append(ultimo_dia_mes)
-    print(f"Data adicionada: {ultimo_dia_mes}")  # Confirmação da data adicionada
+    # Calcula o último dia do mês
+    data = pd.Timestamp(datetime(ano, mes_ajustado, 1))
+    ultimo_dia_util = data + pd.offsets.BMonthEnd(1)  # Encontra o último dia útil do mês
+    
+    datas_desejadas.append(ultimo_dia_util)
+
+# Imprimindo as datas desejadas para verificar
+for data in datas_desejadas:
+    print(data.strftime('%Y-%m-%d'))
+
 
 # Verifique os prints para confirmar se as datas estão sendo calculadas corretamente
 

@@ -12,7 +12,9 @@ from conta_reunioes import make_numero_reunioes_fig
 
 
 template_macro = 'Template.pptx'
-endDate = datetime.strptime("2023-12-29","%Y-%m-%d")
+
+endDate = datetime.strptime("2024-02-29","%Y-%m-%d")
+
 
 def decode_layout(slide : Slide)-> tuple[list,list,list]:
     shape_dict={}
@@ -136,7 +138,7 @@ if __name__=="__main__":
         print(e)
         pass
     layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
-    gestores = ["Portofino", "Taler", "Etrnty", "XPA", "Mandatto", "Consenso", "Pragma", "Vitra", "Brain", "JBFO", "Wright", "G5", "Warren"]
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
 
     print("Gerando gráficos de comparação")
     for fund, tipo, prefix, slide_top_color in zip(["EVO","EON"],["Ações","Multimercado"],["FIA","FIM"],["gray","blue"]):
@@ -146,6 +148,7 @@ if __name__=="__main__":
 
         #Gera heatimap com posições dos concorrentes
         df=gera_df(fund,"MTD",False)
+        df=df[df["Gestor"].isin(gestores)]
         make_heatmap(fund,df)
         slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_"+slide_top_color))
         slide.shapes.title.text = "PEERS - "+fund

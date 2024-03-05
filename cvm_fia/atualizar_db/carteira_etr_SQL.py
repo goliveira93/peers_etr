@@ -42,11 +42,12 @@ df_dates['DT_COMPTC'] = pd.to_datetime(df_dates['DT_COMPTC'])
 dfs_to_concat = []
 
 # Itera sobre as datas únicas e roda o seu código
+# estabelece conexão
+meu_portfolio_connection = Meu_portfolio_connection(False)
+
 for date in df_dates['DT_COMPTC']:
     dt = date
-
-    # estabelece conexão
-    meu_portfolio_connection = Meu_portfolio_connection(False)
+    print(dt)
     # pega data mais recente da carteira
     # dt=meu_portfolio_connection.get_portfolio_last_date(fund_name)
     my_fund = meu_portfolio_connection.get_portfolio_positions_as_df(
@@ -64,7 +65,7 @@ for date in df_dates['DT_COMPTC']:
 
     # Filtra o DataFrame para manter apenas as linhas em que 'CNPJ_FUNDO_COTA' começa com um número
     transformed_fund = transformed_fund[transformed_fund['CNPJ_FUNDO_COTA'].str.startswith(
-        tuple('0123456789'))]
+        tuple('0123456789B'))]
 
     # Se você precisa adicionar colunas adicionais, você pode fazê-lo assim:
     # Aqui estou assumindo que você vai preencher esses valores posteriormente.

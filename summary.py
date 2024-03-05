@@ -162,7 +162,7 @@ def get_changes_chart(title: str, start_date:datetime.datetime, end_date:datetim
     #sort dataframe by values
     rets=rets.sort_values(ascending=True)  #type:ignore
 
-    chart_colors=[colors[6] if i =="Etrnty" else (colors[7] if (i=="IBX" or i=="IFMM") else (colors[0] if rets.loc[i]>rets["Etrnty"] else colors[1])) for i in rets.index]
+    chart_colors=[colors[6] if i =="Etrnty" else (colors[7] if (i=="IBX" or i=="IFMM" or i=="CDI") else (colors[0] if rets.loc[i]>rets["Etrnty"] else colors[1])) for i in rets.index]
 
     #place value on top of bars, format as % tilted 90 degrees
     texts=[str(round(rets.loc[i]*100,1))+"%" for i in rets.index]
@@ -178,6 +178,21 @@ def get_changes_chart(title: str, start_date:datetime.datetime, end_date:datetim
     fig.update_yaxes(showticklabels=False)
 
     return fig
+
+def get_error_figure(text: str)->go.Figure:
+    """
+    returns a bar chart with the performance of the funds in df between start_date and end_date
+    """
+    fig=go.Figure()
+    fig.add_annotation(x=0.1,y=0.5,text=text,
+                       xref='paper',
+                       yref='paper',
+                       yanchor='middle')
+
+    fig.update_layout(chart_layout)
+    fig.update_layout(margin=dict(t=100))
+    return fig
+
 
 def get_beta_chart(title: str, start_date:datetime.datetime, end_date:datetime.datetime, df:pd.DataFrame, basket:list,beta:dict)->go.Figure:
     """
@@ -211,17 +226,17 @@ def get_beta_chart(title: str, start_date:datetime.datetime, end_date:datetime.d
     return fig
 
 def make_summary_figs(end_date:datetime.datetime):
-    peers_evo=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIAS]+[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
-    peers_eon=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIMS]+[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"} ]
+    peers_evo=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIAS if i[1]!="São João"]+[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
+    peers_eon=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIMS if i[1]!="São João"]+[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"} ]
 
     print("Make summary figs running...")
-    start_date=datetime.datetime.strptime("2022-12-30","%Y-%m-%d")
+    YTD_date=datetime.datetime(2023,12,29)
 
     it={"eon":peers_eon,"evo":peers_evo}
     tit={"eon":"Multimercado","evo":"Ações"}
 
     for k in it.keys():
-        d=BasketHistoricalData("Port",start_date,end_date,it[k])
+        d=BasketHistoricalData("Port",YTD_date,end_date,it[k])
         df=d.getData(dropna=False)
         
         rets=df/df.shift(1)-1
@@ -231,18 +246,21 @@ def make_summary_figs(end_date:datetime.datetime):
             s="Não foi possível baixar todos os preços até o dia: "+end_date.strftime("%Y-%m-%d")+". Ultima data: "+rets.index[-1].strftime("%Y-%m-%d")+"\nAtivos sem preço no final:"
             for i in x:
                 s+="\n"+i
-            raise ValueError(s)
-
-        fig=get_changes_chart(tit[k]+" - Peformance YTD",start_date,end_date,df,it[k])
-        if os.path.exists(os.path.join(".","figures")):
+            fig=get_error_figure(s)
             fig.write_image(os.path.join(".","figures",k+"_YTD.png"))
-            print("Saved image:"+os.path.join(".","figures",k+"_YTD.png"))
-        
-        start_date_mtd=last_day_of_previous_month(end_date, list(df.index))
-        fig=get_changes_chart(tit[k]+" - Peformance MTD",start_date_mtd,end_date,df,it[k])
-        if os.path.exists(os.path.join(".","figures")):
             fig.write_image(os.path.join(".","figures",k+"_MTD.png"))
-            print("Saved image:"+os.path.join(".","figures",k+"_MTD.png"))
+            print(s)
+        else:
+            fig=get_changes_chart(tit[k]+" - Peformance YTD",YTD_date,end_date,df,it[k])
+            if os.path.exists(os.path.join(".","figures")):
+                fig.write_image(os.path.join(".","figures",k+"_YTD.png"))
+                print("Saved image:"+os.path.join(".","figures",k+"_YTD.png"))
+            
+            start_date_mtd=last_day_of_previous_month(end_date, list(df.index))
+            fig=get_changes_chart(tit[k]+" - Peformance MTD",start_date_mtd,end_date,df,it[k])
+            if os.path.exists(os.path.join(".","figures")):
+                fig.write_image(os.path.join(".","figures",k+"_MTD.png"))
+                print("Saved image:"+os.path.join(".","figures",k+"_MTD.png"))
 
 if __name__=="__main__":
     end_date=datetime.datetime.strptime("2023-11-30","%Y-%m-%d")

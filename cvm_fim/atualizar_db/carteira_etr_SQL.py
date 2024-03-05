@@ -41,11 +41,12 @@ df_dates['DT_COMPTC'] = pd.to_datetime(df_dates['DT_COMPTC'])
 dfs_to_concat = []
 
 # Itera sobre as datas únicas e roda o seu código
+# estabelece conexão
+meu_portfolio_connection = Meu_portfolio_connection(False)
+
 for date in df_dates['DT_COMPTC']:
     dt = date
-
-    # estabelece conexão
-    meu_portfolio_connection = Meu_portfolio_connection(False)
+    print(dt)
     # pega data mais recente da carteira
     # dt=meu_portfolio_connection.get_portfolio_last_date(fund_name)
     my_fund = meu_portfolio_connection.get_portfolio_positions_as_df(
@@ -63,7 +64,7 @@ for date in df_dates['DT_COMPTC']:
 
     # Filtra o DataFrame para manter apenas as linhas em que 'CNPJ_FUNDO_COTA' começa com um número
     transformed_fund = transformed_fund[transformed_fund['CNPJ_FUNDO_COTA'].str.startswith(
-        tuple('0123456789'))]
+        tuple('0123456789B'))]
 
     # Se você precisa adicionar colunas adicionais, você pode fazê-lo assim:
     # Aqui estou assumindo que você vai preencher esses valores posteriormente.
@@ -81,10 +82,6 @@ for date in df_dates['DT_COMPTC']:
                          'NM_FUNDO_COTA'] = 'IBIUNA EQUITIES 30 FUNDO DE INVESTIMENTO EM COTAS DE FUNDOS DE INVESTIMENTO EM AÇÕES'
     transformed_fund.loc[transformed_fund['CNPJ_FUNDO_COTA'] == '37.887.412/0001-03',
                          'NM_FUNDO_COTA'] = 'SHARP EQUITY VALUE ADVISORY FUNDO DE INVESTIMENTO EM COTAS DE FUNDOS DE INVESTIMENTO EM AÇÕES'
-    transformed_fund.loc[transformed_fund['CNPJ_FUNDO_COTA'] == '51.162.466/0001-24',
-                         'NM_FUNDO_COTA'] = 'IBIUNA LONG SHORT FO FUNDO DE INVESTIMENTO EM COTAS DE FUNDOS DE INVESTIMENTO MULTIMERCADO'
-    transformed_fund.loc[transformed_fund['CNPJ_FUNDO_COTA'] == '26.516.247/0001-59',
-                         'NM_FUNDO_COTA'] = 'XPA HARPIA FIC FIM CP IE'
 
     # Agora você pode selecionar apenas as colunas que você quer.
     final_columns = ['Gestor', 'DT_COMPTC', 'CNPJ_FUNDO',
@@ -94,7 +91,7 @@ for date in df_dates['DT_COMPTC']:
     fundos = pd.concat(
         [transformed_fund["CNPJ_FUNDO"], transformed_fund["CNPJ_FUNDO_COTA"]]).unique().tolist()
     start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
-    end_date = datetime.strptime("01-03-2024", "%m-%d-%Y")
+    end_date = datetime.strptime("02-01-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
         "PX_LAST"], "MONTHLY")
 

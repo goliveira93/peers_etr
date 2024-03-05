@@ -69,8 +69,8 @@ config = {"EON": {"ETR_CNPJ": "47.716.356/0001-90",
 
 
 if __name__ == "__main__":
-    file = "cda_fi_BLC_2_202309.csv"  # alterar o nome do arquivo para o mais recente
-    pl_file = "cda_fi_PL_202309.csv"  # alterar o nome do arquivo para o mais recente
+    file = "cda_fi_BLC_2_202310.csv"  # alterar o nome do arquivo para o mais recente
+    pl_file = "cda_fi_PL_202310.csv"  # alterar o nome do arquivo para o mais recente
     file_path=os.path.join(".", "data")
     conf = config["EON"]
 
