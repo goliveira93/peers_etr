@@ -238,6 +238,7 @@ def make_summary_figs(end_date:datetime.datetime):
     for k in it.keys():
         d=BasketHistoricalData("Port",YTD_date,end_date,it[k])
         df=d.getData(dropna=False)
+        
         rets=df/df.shift(1)-1
         rets=rets.droplevel(1,axis=1).dropna(how="any")
         if rets.index[-1]!=end_date:
