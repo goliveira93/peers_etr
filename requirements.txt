@@ -1,5 +1,5 @@
-#et_lib==2.6.2
-#--index-url=https://bcms.bloomberg.com/pip/simple blpapi
+//172.16.215.2/Setup/gb-0.2.8-py3-none-any.whl
+//172.16.215.2/Setup/et_lib-2.6.2.tar.gz
 appdirs==1.4.4
 beautifulsoup4==4.12.3
 certifi==2024.2.2
@@ -45,3 +45,4 @@ webencodings==0.5.1
 workalendar==17.0.0
 XlsxWriter==3.2.0
 yfinance==0.2.32
+#--index-url=https://bcms.bloomberg.com/pip/simple blpapi

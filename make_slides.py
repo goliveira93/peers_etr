@@ -15,7 +15,6 @@ template_macro = 'Template.pptx'
 
 endDate = datetime.strptime("2024-02-29","%Y-%m-%d")
 
-
 def decode_layout(slide : Slide)-> tuple[list,list,list]:
     shape_dict={}
     for shape in slide.shapes:  #type: ignore
