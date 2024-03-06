@@ -7,11 +7,9 @@ import os.path
 from libs.delta_etrnty import gera_df
 import pandas as pd
 from libs.heatmap import make_heatmap
-from summary import make_summary_figs
+import summary
 from conta_reunioes import make_numero_reunioes_fig
 from fund_performance import gera_df_performance, tables
-
-
 
 template_macro = 'Template.pptx'
 
@@ -124,7 +122,8 @@ def fill_returns(slide: Slide, df_final_ultimo_mes, gestor: str, periodo: str) -
     return slide
 
 if __name__=="__main__":
-    import sys 
+    layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
     prs = Presentation(template_macro)
 
     #faz grafico com numero de reunioes
@@ -135,7 +134,7 @@ if __name__=="__main__":
 
     #faz graficos de barra com performance absoluta YTD, MTD para eon e evo
     try:
-        make_summary_figs(endDate)
+        summary.make_summary_figs(endDate,gestores)
     except ValueError as e:
         print(e)
         pass
@@ -154,9 +153,6 @@ if __name__=="__main__":
         slide_ytd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
         slide_ytd.shapes.title.text = f"Retornos YTD"
         fill_1_grafico(slide_ytd, {"charts": ["Performance de Fundos YTD"], "files": [f"{tables[fundo][0]}_retorno_ytd"]}, 0)
-
-    layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
-    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
 
     print("Gerando gráficos de comparação")
 
