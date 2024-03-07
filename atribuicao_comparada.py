@@ -8,6 +8,7 @@ import os
 import numpy as np
 import plotly.graph_objects as go
 from libs.sinonimos import dicionario_sinonimos
+from settings import colors
 # from plotly.subplots import make_subplots
 
 diretorio_base = os.path.join(".","figures")
@@ -17,16 +18,6 @@ tables = {"EON":["cvm_peers_fim","cvm_peers_fim_estimado","FIM"], "EVO":["cvm_pe
 #####  Configuração #########
 table=tables["EVO"]
 periodo_configurado = "MTD"  # "MTD ou "YTD"
-
-colors = ["#2C4257",
-          "#48728A",
-          "#708F92",
-          "#A3ABA4",
-          "#605869",  # cor principal  para texto de corpo
-          "#948794",
-          "#E7A75F",  # Apenas para detalhes em elementos gráficos
-          "#A25B1E"  # Apenas em gráficos
-          ]
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()

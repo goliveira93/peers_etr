@@ -225,7 +225,7 @@ def get_beta_chart(title: str, start_date:datetime.datetime, end_date:datetime.d
     fig.update_layout(margin=dict(t=100))
     return fig
 
-def make_summary_figs(end_date:datetime.datetime, gestores:list):
+def make_summary_figs(end_date:datetime.datetime, gestores:list)->List[go.Figure]:
     peers_evo=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIAS if i[1] in gestores]+[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
     peers_eon=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIMS if i[1] in gestores]+[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"} ]
 
@@ -234,6 +234,7 @@ def make_summary_figs(end_date:datetime.datetime, gestores:list):
 
     it={"eon":peers_eon,"evo":peers_evo}
     tit={"eon":"Multimercado","evo":"Ações"}
+    figs=[]
 
     for k in it.keys():
         d=BasketHistoricalData("Port",YTD_date,end_date,it[k])
@@ -247,20 +248,25 @@ def make_summary_figs(end_date:datetime.datetime, gestores:list):
             for i in x:
                 s+="\n"+i
             fig=get_error_figure(s)
+            figs.append(fig)
             fig.write_image(os.path.join(".","figures",k+"_YTD.png"))
+            figs.append(fig)
             fig.write_image(os.path.join(".","figures",k+"_MTD.png"))
             print(s)
         else:
             fig=get_changes_chart(tit[k]+" - Peformance YTD",YTD_date,end_date,df,it[k])
             if os.path.exists(os.path.join(".","figures")):
+                figs.append(fig)
                 fig.write_image(os.path.join(".","figures",k+"_YTD.png"))
                 print("Saved image:"+os.path.join(".","figures",k+"_YTD.png"))
             
             start_date_mtd=last_day_of_previous_month(end_date, list(df.index))
             fig=get_changes_chart(tit[k]+" - Peformance MTD",start_date_mtd,end_date,df,it[k])
             if os.path.exists(os.path.join(".","figures")):
+                figs.append(fig)
                 fig.write_image(os.path.join(".","figures",k+"_MTD.png"))
                 print("Saved image:"+os.path.join(".","figures",k+"_MTD.png"))
+    return figs
 
 if __name__=="__main__":
     gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]

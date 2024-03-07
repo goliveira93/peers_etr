@@ -46,7 +46,7 @@ def make_numero_reunioes_fig(data_final:datetime)->go.Figure:
     port = os.getenv("port")
     database = "estrela_vespertina"
 
-    __estrela_vespertina_engine__  = create_engine("mysql+mysqldb://"+user+":"+password+"@"+host+"/"+database)
+    __estrela_vespertina_engine__  = create_engine("mysql+mysqldb://"+user+":"+password+"@"+host+"/"+database) #type: ignore
     __estrela_vespertina_base__.metadata.create_all(__estrela_vespertina_engine__)
     Estrela_vespertina_session= sessionmaker(bind=__estrela_vespertina_engine__)
 
@@ -68,8 +68,9 @@ def make_numero_reunioes_fig(data_final:datetime)->go.Figure:
 
     # Displaying the plot
     fig.write_image(os.path.join(".","figures","reunioes_mes.png"))
+    return fig
 
 if __name__=="__main__":
     import sys
-    make_numero_reunioes_fig()
+    make_numero_reunioes_fig(datetime.today())
     sys.exit()

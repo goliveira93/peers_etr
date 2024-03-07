@@ -7,19 +7,11 @@ from dotenv import load_dotenv
 from libs.sinonimos import dicionario_sinonimos
 import plotly.graph_objects as go
 from libs.db_functions import get_fund_return
+from settings import colors
 
 
 diretorio_base = os.path.join(".", "figures")
 
-colors=["#2C4257",
-        "#48728A",
-        "#708F92",
-        "#A3ABA4",
-        "#605869",   #cor principal  para texto de corpo
-        "#948794",
-        "#E7A75F",   #Apenas para detalhes em elementos gráficos
-        "#A25B1E"    #Apenas em gráficos
-        ]
 
 chart_layout = dict(
     height=820,  # Altura do gráfico

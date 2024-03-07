@@ -17,6 +17,7 @@ from pptx.enum.text import MSO_AUTO_SIZE
 from pptx.enum.shapes import MSO_SHAPE # type: ignore
 from pptx.enum.text import PP_ALIGN  # type: ignore
 from summary import get_FOF_price_change  #type: ignore
+from settings import britech_data_final
 
 carteira_eon = [
     {"Nome":"Ibiuna STB","Ticker":"27825226000188","Source":"Quantum"},
@@ -40,7 +41,7 @@ carteira_evo = [
     {"Nome":"Ibiúna LO", "Ticker": "26243348000101", "Source":"Quantum"},
     {"Nome":"Kiron","Ticker":"25213366000170","Source":"Quantum"},
     {"Nome":"Núcleo","Ticker":"37367932000187","Source":"Quantum", "Proxy ticker":"14068366000107", "Proxy source":"Quantum"},
-    {"Nome":"Sharp","Ticker":"12565159000132","Source":"Quantum"}
+    {"Nome":"Organon","Ticker":"17400251000166","Source":"Quantum"}
 ]
 
 carteira_outros = [
@@ -52,39 +53,6 @@ carteira_outros = [
     {"Nome":"CDI","Ticker":"CDI","Source":"Quantum"}
 ]
 
-
-class Performance_slide:
-    """
-    Convenience class to update performance slide. Has all the fields of a single page performance slide used in report.pptx
-    """
-    def __init__(self, my_slide: Slide):
-        self.slide=my_slide
-
-        self.title   =self.slide.placeholders[10].text  #type:ignore
-        self.subtitle=self.slide.placeholders[11].text  #type:ignore
-        self.chart_1 =self.slide.placeholders[12].text  #type:ignore
-        self.chart_2 =self.slide.placeholders[13].text  #type:ignore
-        self.month   =self.slide.placeholders[15].text  #type:ignore
-        self.ytd     =self.slide.placeholders[16].text  #type:ignore
-        self.mt12    =self.slide.placeholders[17].text  #type:ignore
-        self.mt24    =self.slide.placeholders[18].text  #type:ignore
-        self.mt60    =self.slide.placeholders[19].text  #type:ignore
-
-    def update_slide(self):
-        """
-        Takes no parameters. Updates the slide with the fields properties
-        """
-        self.slide.placeholders[10].text=self.title                                                         #type:ignore
-        self.slide.placeholders[11].text=self.subtitle                                                      #type:ignore
-        self.slide.placeholders[12].text=self.chart_1                                                       #type:ignore
-        self.slide.placeholders[13].text=self.chart_2                                                       #type:ignore
-        self.slide.placeholders[15].text="-" if pd.isna(self.month) else str(round(self.month,1))+"%"       #type:ignore
-        self.slide.placeholders[16].text=str(round(self.ytd,1))+"%"                                         #type:ignore
-        self.slide.placeholders[17].text=str(round(self.mt12,1))+"%"                                        #type:ignore
-        self.slide.placeholders[18].text=str(round(self.mt24,1))+"%"                                        #type:ignore
-        self.slide.placeholders[19].text="-" if pd.isna(self.mt60) else str(round(self.mt60,1))+"%"         #type:ignore
-
-        return self.slide
 
 def add_update(my_slide, enddate:str):
     """
@@ -159,7 +127,8 @@ def df_to_slide(my_df:pd.DataFrame, my_slide:Slide, my_titulo:str)->Slide:
 
 
 if __name__=="__main__":
-    end_date=datetime.strptime("2023-12-29","%Y-%m-%d")
+    end_date=britech_data_final
+    end_date=datetime(2024,2,28)
     prs = Presentation(os.path.join(".","Template.pptx"))    # Só precisa abrir o arquivo 1x
     carteira_evo+=[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
     carteira_eon+=[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"}]
@@ -171,17 +140,6 @@ if __name__=="__main__":
                 df=df.drop(r)
                 df.loc[r]=row_to_move
 
-        for t in df.index:
-            print("Updating: "+t)
-            slide = Performance_slide(prs.slides.add_slide(prs.slide_layouts.get_by_name("one page fundo")))
-            slide.title=t
-            slide.month =df.loc[t,"MTD"]
-            slide.ytd   =df.loc[t,"YTD"]
-            slide.mt12  =df.loc[t,"12 meses"]
-            slide.mt24  =df.loc[t,"24 meses"]
-            slide.mt60  =df.loc[t,"60 meses"]
-            slide.update_slide()
-            slide.slide=add_update(slide.slide,datetime.strftime(end_date,"%d-%m-%Y"))
         df["MTD"]=df["MTD"].apply(lambda x: str(x)+"%")
         df["YTD"]=df["YTD"].apply(lambda x: str(x)+"%")
         df["12 meses"]=df["12 meses"].apply(lambda x: str(x)+"%")

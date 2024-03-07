@@ -1,3 +1,4 @@
+import argparse
 import collections 
 import collections.abc
 from pptx import Presentation
@@ -10,6 +11,7 @@ from libs.heatmap import make_heatmap
 import summary
 from conta_reunioes import make_numero_reunioes_fig
 from fund_performance import gera_df_performance, tables
+import fof
 
 template_macro = 'Template.pptx'
 
@@ -120,56 +122,40 @@ def fill_returns(slide: Slide, df_final_ultimo_mes, gestor: str, periodo: str) -
 
     return slide
 
-if __name__=="__main__":
-    layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
-    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
-    prs = Presentation(template_macro)
 
-    #faz grafico com numero de reunioes
-    make_numero_reunioes_fig(endDate)
-    slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("1_grafico"))
+def cria_slides():
+    slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("cover_fundos"))
+    slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("1_grafico_cinza"))
     slide.shapes.title.text = "SELEÇÃO DE GESTORES"
     fill_1_grafico(slide,{"charts":["Número de interações com gestores"],"files":["reunioes_mes"]},0)
 
-    #faz graficos de barra com performance absoluta YTD, MTD para eon e evo
-    try:
-        summary.make_summary_figs(endDate,gestores)
-    except ValueError as e:
-        print(e)
-        pass
-
-    save_files = True
-    for fundo, slide_top_color in zip(["EVO","EON"], ["gray","blue"]):
-        # Gerar o retorno MTD
-        df_mtd, df_ytd = gera_df_performance(fundo, save_files)
+    for fund, tipo, prefix, slide_top_color, title, template in zip(["EON","EVO"],["Multimercado","Ações"],["FIM","FIA"],["blue","gray"],["ETRNTY EON","ETRNTY EVO"],["1_grafico_azul","1_grafico_cinza"]):
+        slide = prs.slides.add_slide(prs.slide_layouts.get_by_name(template))
+        slide.shapes.title.text = title
+        fill_1_grafico(slide,{"charts":["Alterações no portfólio​"],"files":[fund+"_weight_cng"]},0)
+        slide = prs.slides.add_slide(prs.slide_layouts.get_by_name(template))
+        slide.shapes.title.text = title
+        fill_1_grafico(slide,{"charts":["Principais performances no mês​​"],"files":[fund+"_price_cngs"]},0)
+        slide = prs.slides.add_slide(prs.slide_layouts.get_by_name(template))
+        slide.shapes.title.text = title
+        fill_1_grafico(slide,{"charts":["Contribuições para o retorno do mês​​"],"files":[fund+"_contribution"]},0)
         
-        # Adicionar o slide para o retorno MTD
-        slide_mtd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
-        slide_mtd.shapes.title.text = f"Retornos MTD"
-        fill_1_grafico(slide_mtd, {"charts": ["Performance de Fundos MTD"], "files": [f"{tables[fundo][0]}_retorno_mtd"]}, 0)
-        
-        # Adicionar o slide para o retorno YTD
-        slide_ytd = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
-        slide_ytd.shapes.title.text = f"Retornos YTD"
-        fill_1_grafico(slide_ytd, {"charts": ["Performance de Fundos YTD"], "files": [f"{tables[fundo][0]}_retorno_ytd"]}, 0)
-
-    print("Gerando gráficos de comparação")
-
-    for fund, tipo, prefix, slide_top_color in zip(["EVO","EON"],["Ações","Multimercado"],["FIA","FIM"],["gray","blue"]):
         #Pega .png dos gráficos de barra (performance absoluta) e coloca no pptx
         slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("performance_comp_"+slide_top_color))
         fill_performance_comp(slide,{"files":[fund.lower()+"_MTD",fund.lower()+"_YTD"],"title":"ETRNTY "+fund})
 
         #Gera heatimap com posições dos concorrentes
-        df=gera_df(fund,"MTD",False)
-        df=df[df["Gestor"].isin(gestores)]
-        make_heatmap(fund,df)
         slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_"+slide_top_color))
         slide.shapes.title.text = "PEERS - "+fund
         fill_1_grafico(slide,{"charts":["carteira pares"],"files":["heatmap_"+fund]},0)
 
         #gera comparações
         for period in ["MTD","YTD"]:
+            #slide com as peformances dos fundos dentro dos FoFs da concorrência
+            slide = prs.slides.add_slide(prs.slide_layouts.get_by_name("comps_slide_" + slide_top_color))
+            slide.shapes.title.text = "Retornos "+period
+            fill_1_grafico(slide, {"charts": ["Performance de Fundos "+period], "files": [f"{tables[fund][0]}_retorno_"+period.lower()]}, 0)
+
             try:
                 df_final_ultimo_mes=gera_df(fund,period)
             except Exception as e:
@@ -199,8 +185,60 @@ if __name__=="__main__":
                     layouts["2_graficos"](slide, flat_lists)
 
 
-            # Salvar a apresentação
-    filename = "Comparacao_"
+if __name__=="__main__":
+    filename=""
+    layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
+
+    parser = argparse.ArgumentParser(description='make_slides')
+    # Adicione argumentos usando o método add_argument
+    parser.add_argument('--parcial', choices=["resumo","analitico","fof","apenas_slides"], default=None,help="Se especificado, roda apenas parte do relatório" )
+    args = parser.parse_args()
+    
+    if args.parcial=="apenas_slides":
+        filename="slides_"
+    else:
+        if args.parcial is None or args.parcial=="resumo":
+            filename="resumo_"
+            figs=[]
+            #faz grafico com numero de reunioes
+            figs.append(make_numero_reunioes_fig(endDate))
+            #faz graficos de barra com performance absoluta YTD, MTD para eon e evo
+            try:
+                figs=figs+summary.make_summary_figs(endDate,gestores)
+            except ValueError as e:
+                print(e)
+                pass
+            if args.parcial is None:
+                for f in figs:
+                    f.show()  
+        if args.parcial is None or args.parcial=="fof":
+            figs=[]
+            figs=figs+fof.performance_attrib_fof("EON")  #type: ignore
+            figs=figs+fof.performance_attrib_fof("EVO")  #type: ignore
+            if args.parcial is not None:
+                for f in figs:
+                    f.show()
+            
+
+        if args.parcial is None or args.parcial=="analitico":
+            filename="analitico_"
+            save_files = True
+
+            for fund, tipo, prefix, slide_top_color in zip(["EON","EVO"],["Multimercado","Ações"],["FIM","FIA"],["blue","gray"]):
+                #df com as peformances dos fundos dentro dos FoFs da concorrência
+                df_mtd, df_ytd = gera_df_performance(fund, save_files)
+                #Gera heatimap com posições dos concorrentes
+                df=gera_df(fund,"MTD",False)
+                df=df[df["Gestor"].isin(gestores)]
+                make_heatmap(fund,df)
+                
+           
+    # Salvar a apresentação
+    prs = Presentation(template_macro)
+    cria_slides()
+    if args.parcial is None:
+        filename = "Comparacao_"
     prs.save(os.path.join("PPT", filename + endDate.strftime("%m-%y") + ".pptx"))
     print("Apresentação salva como " + filename + endDate.strftime("%m-%y") + ".pptx")
 
