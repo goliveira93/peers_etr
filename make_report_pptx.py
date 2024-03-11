@@ -128,7 +128,7 @@ def df_to_slide(my_df:pd.DataFrame, my_slide:Slide, my_titulo:str)->Slide:
 
 if __name__=="__main__":
     end_date=britech_data_final
-    end_date=datetime(2024,2,28)
+    end_date=datetime(2024,2,29)
     prs = Presentation(os.path.join(".","Template.pptx"))    # Só precisa abrir o arquivo 1x
     carteira_evo+=[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
     carteira_eon+=[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"}]

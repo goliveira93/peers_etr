@@ -48,6 +48,13 @@ colors=["#2C4257",
         "#A25B1E"    #Apenas em gráficos
         ]
 
+def n_years_ago(data:datetime.datetime, n:int):
+    if data.month==2 and data.day==29 and n%4!=0:
+        return datetime.datetime(data.year-n,2,28)
+    if data.month==2 and data.day==28 and n%4==0:
+        return datetime.datetime(data.year-n,2,29)
+    return datetime.datetime(year=data.year-n,month=end_date.month,day=end_date.day)
+
 def last_day_of_previous_month(today:datetime.datetime, index: List[datetime.datetime])->datetime.datetime:
     """
     Retorna o ultimo dia do mes anterior a data fornecida
@@ -109,9 +116,9 @@ def get_price_change(ativos:list, end_date: datetime.datetime)->pd.DataFrame:
     dates={
         "MTD":{"data":last_day_of_previous_month(end_date, list(data_frame.index))},
         "YTD":{"data":last_day_of_previous_year(end_date, list(data_frame.index))},
-        "12 meses":{"data":day_before_date(datetime.datetime(year=end_date.year-1,month=end_date.month,day=end_date.day), list(data_frame.index))},
-        "24 meses":{"data":day_before_date(datetime.datetime(year=end_date.year-2,month=end_date.month,day=end_date.day), list(data_frame.index))},
-        "60 meses":{"data":day_before_date(datetime.datetime(year=end_date.year-5,month=end_date.month,day=end_date.day), list(data_frame.index))}
+        "12 meses":{"data":day_before_date(n_years_ago(end_date,1), list(data_frame.index))},
+        "24 meses":{"data":day_before_date(n_years_ago(end_date,2), list(data_frame.index))},
+        "60 meses":{"data":day_before_date(n_years_ago(end_date,5), list(data_frame.index))}
     }
     rets={cnpj_dict[i]:{} for i in data_frame.columns}
     for ativo in data_frame.columns:
