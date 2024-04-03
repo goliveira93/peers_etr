@@ -1,7 +1,5 @@
 from datetime import datetime
 
-britech_data_inicial=datetime(2024,1,31)
-britech_data_final=datetime(2024,2,29)
 
 #colors=["#2C4257",  
 #        "#48728A",
@@ -49,8 +47,8 @@ vertical_layout = dict(
     plot_bgcolor='rgba(0,0,0,0)'
 )
 
-endDate=datetime.strptime("29022024","%d%m%Y")
-startDate=datetime.strptime("31012024","%d%m%Y")
+endDate=datetime.strptime("28032024","%d%m%Y")
+startDate=datetime.strptime("29022024","%d%m%Y")
 
 fund_data = {"EVO":{
                 "cod_britech": "684627",

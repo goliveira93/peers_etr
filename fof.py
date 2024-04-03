@@ -3,14 +3,13 @@ from typing import Literal, List
 import pandas as pd
 import os
 from datetime import datetime
+from summary import last_day_of_previous_month
 import plotly.graph_objects as go
 from et_lib.ET_Data_Reader import BasketHistoricalData
 from gb import Carteira
-from settings import colors, chart_layout, vertical_layout, endDate, startDate, fund_data, britech_data_inicial, britech_data_final
+from settings import colors, chart_layout, vertical_layout, fund_data, startDate, endDate
 
-data_inicial=britech_data_inicial
-data_final=britech_data_final
-    
+   
 def plot_returns(df:pd.DataFrame):
     rets=(df.shift(-1)/df-1).dropna()
     fig=go.Figure(data=[
@@ -90,9 +89,9 @@ def limpa_dataframe(df:pd.DataFrame)->pd.DataFrame:
 def performance_attrib_fof(fof_name=Literal["EON"]|Literal["EVO"])->List[go.Figure]:
     df=[]
     fund=fund_data[str(fof_name)]
-    print("FoF baixando carteiras da britech.")
-    df0=Carteira.get_posicao_carteira(ids_carteira=fund["cod_britech"],date_pos=data_inicial,cod_etr=fof_name)
-    df1=Carteira.get_posicao_carteira(ids_carteira=fund["cod_britech"],date_pos=data_final,cod_etr=fof_name)
+    print(fof_name+" baixando carteiras da britech.")
+    df0=Carteira.get_posicao_carteira(ids_carteira=fund["cod_britech"],date_pos=startDate,cod_etr=fof_name)
+    df1=Carteira.get_posicao_carteira(ids_carteira=fund["cod_britech"],date_pos=endDate,cod_etr=fof_name)
 
     cnpj_dict={df0.loc[i,"CNPJ"]:str(df0.loc[i,"cod_etrnty"]) for i in df0.index}|{df1.loc[i,"CNPJ"]:str(df1.loc[i,"cod_etrnty"]) for i in df1.index}
     cnpj_dict[fund["fund_cnpj"]]=str(fof_name)

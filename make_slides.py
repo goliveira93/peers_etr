@@ -11,11 +11,10 @@ from libs.heatmap import make_heatmap
 import summary
 from conta_reunioes import make_numero_reunioes_fig
 from fund_performance import gera_df_performance, tables
+from settings import endDate
 import fof
 
 template_macro = 'Template.pptx'
-
-endDate = datetime.strptime("2024-02-29","%Y-%m-%d")
 
 def decode_layout(slide : Slide)-> tuple[list,list,list]:
     shape_dict={}
@@ -97,28 +96,32 @@ def fill_performance_comp(slide, args: dict) -> Slide:
 def fill_returns(slide: Slide, df_final_ultimo_mes, gestor: str, periodo: str) -> Slide:
     # Encontra a linha no dataframe onde a coluna 'Gestor' é igual ao gestor desejado
     filtro = df_final_ultimo_mes['Gestor'] == gestor
-    filtro_ETR = df_final_ultimo_mes['Gestor'] == 'Etrnty'
-    
-    if periodo == 'MTD':
-        coluna_retorno_gestor = 'RETORNO_PEER'
-        coluna_retorno_ETR = 'RETORNO_PEER'
-    else:  # 'YTD'
-        coluna_retorno_gestor = 'RETORNO_COMPOSTO_ACUMULADO_PEER'
-        coluna_retorno_ETR = 'RETORNO_COMPOSTO_ACUMULADO_PEER'
-    
-    retorno_peer = df_final_ultimo_mes.loc[filtro, coluna_retorno_gestor].values[0]
-    retorno_ETR = df_final_ultimo_mes.loc[filtro_ETR, coluna_retorno_ETR].values[0]
-
-    # Formata o valor de retorno como uma string de porcentagem
-    texto_retorno_peer = f"{retorno_peer:.1%}"
-    texto_retorno_ETR = f"{retorno_ETR:.1%}"
-
     # Localiza os placeholders onde o texto deve ser inserido
     _, bodies, _ = decode_layout(slide)
+    if sum(filtro.values==True)==0:
+        slide.placeholders[bodies[4]].text = "Não há retornos para o gestor: "+gestor  # type: ignore
+        slide.placeholders[bodies[5]].text = "ERRO"  # type: ignore 
 
-    # Insere o texto no placeholder correspondente
-    slide.placeholders[bodies[4]].text = texto_retorno_ETR  # type: ignore
-    slide.placeholders[bodies[5]].text = texto_retorno_peer  # type: ignore    
+    else:
+        filtro_ETR = df_final_ultimo_mes['Gestor'] == 'Etrnty'
+        
+        if periodo == 'MTD':
+            coluna_retorno_gestor = 'RETORNO_PEER'
+            coluna_retorno_ETR = 'RETORNO_PEER'
+        else:  # 'YTD'
+            coluna_retorno_gestor = 'RETORNO_COMPOSTO_ACUMULADO_PEER'
+            coluna_retorno_ETR = 'RETORNO_COMPOSTO_ACUMULADO_PEER'
+        
+        retorno_peer = df_final_ultimo_mes.loc[filtro, coluna_retorno_gestor].values[0]
+        retorno_ETR = df_final_ultimo_mes.loc[filtro_ETR, coluna_retorno_ETR].values[0]
+
+        # Formata o valor de retorno como uma string de porcentagem
+        texto_retorno_peer = f"{retorno_peer:.1%}"
+        texto_retorno_ETR = f"{retorno_ETR:.1%}"
+
+        # Insere o texto no placeholder correspondente
+        slide.placeholders[bodies[4]].text = texto_retorno_ETR  # type: ignore
+        slide.placeholders[bodies[5]].text = texto_retorno_peer  # type: ignore    
 
     return slide
 
