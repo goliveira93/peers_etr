@@ -92,7 +92,7 @@ for date in df_dates['DT_COMPTC']:
     fundos = pd.concat(
         [transformed_fund["CNPJ_FUNDO"], transformed_fund["CNPJ_FUNDO_COTA"]]).unique().tolist()
     start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
-    end_date = datetime.strptime("02-01-2024", "%m-%d-%Y")
+    end_date = datetime.strptime("04-01-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
         "PX_LAST"], "MONTHLY")
 
@@ -119,26 +119,17 @@ for date in df_dates['DT_COMPTC']:
     transformed_fund['DT_COMPTC'] = pd.to_datetime(
         transformed_fund['DT_COMPTC'])
 
-    # Atualizando 'DT_COMPTC' para o último dia do mês
-    ret_melt_cota['DT_COMPTC'] += MonthEnd(0)
-    ret_melt_fundo['DT_COMPTC'] += MonthEnd(0)
-    transformed_fund['DT_COMPTC'] += MonthEnd(0)
+    # Continue com os merges como planejado
+    final_result = pd.merge(transformed_fund, ret_melt_cota, how='left', on=['DT_COMPTC', 'CNPJ_FUNDO_COTA'])
 
-    # Primeiro merge com CNPJ_FUNDO_COTA
-    final_result = pd.merge(transformed_fund, ret_melt_cota, how='left', on=[
-        'DT_COMPTC', 'CNPJ_FUNDO_COTA'])
-
-    # Segundo merge com CNPJ_FUNDO
-    final_result = pd.merge(final_result, ret_melt_fundo,
-                            how='left', on=['DT_COMPTC', 'CNPJ_FUNDO'])
+    final_result = pd.merge(final_result, ret_melt_fundo, how='left', on=['DT_COMPTC', 'CNPJ_FUNDO'])
 
     # Calculando o CONTRIBUICAO
-    final_result['CONTRIBUICAO'] = final_result['PESO'] * \
-        final_result['RETORNO']
+    final_result['CONTRIBUICAO'] = final_result['PESO'] * final_result['RETORNO']
     dfs_to_concat.append(final_result)
 
-final_df = pd.concat(dfs_to_concat, ignore_index=True)
-final_df.to_excel("avaliacao_estrutura_dados.xlsx", index=False)
-# Salvando em SQL
-final_df.to_sql('cvm_peers_fia_estimado', con=engine,
-                if_exists='append', index=False)
+    # Concatenação e salvamento dos dados
+    final_df = pd.concat(dfs_to_concat, ignore_index=True)
+    final_df.to_excel("avaliacao_estrutura_dados.xlsx", index=False)
+    # Salvando em SQL
+    final_df.to_sql('cvm_peers_fia_estimado', con=engine, if_exists='append', index=False)

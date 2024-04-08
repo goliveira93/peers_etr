@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 import os
 
 
-def ajustar_data(data, mes_vigente=10):
+def ajustar_data(data, mes_vigente=11):
     if data.month == mes_vigente:
         offset = -2
     else:
@@ -49,20 +49,11 @@ df = pd.read_sql(query, con=engine)
 colunas_originais = df.columns.tolist()
 
 calendario = Brazil()
-
-df['DT_COMPTC'] = df['DT_COMPTC'].apply(ajustar_data)
-
-hoje = datetime.now()
-ultimo_dia_mes_anterior = datetime(2023, 10, 31)  # Seu último ponto de dados é 30/09/2023
-
-
+ano_atual = 2024
 datas_desejadas = []
 
-# Supondo que você esteja começando em outubro de 2023
-ano_atual = 2023
-
-for mes in range(11, 14):  # Loop de novembro (11) a janeiro (13) do ano seguinte
-    if mes > 12:  # Ajuste para janeiro do ano seguinte
+for mes in range(1, 4):  # Loop de janeiro (1) a março (3)
+    if mes > 12:  # Ajuste para janeiro do ano seguinte, se necessário
         ano = ano_atual + 1
         mes_ajustado = 1
     else:
@@ -71,7 +62,14 @@ for mes in range(11, 14):  # Loop de novembro (11) a janeiro (13) do ano seguint
     
     # Calcula o último dia do mês
     data = pd.Timestamp(datetime(ano, mes_ajustado, 1))
-    ultimo_dia_util = data + pd.offsets.BMonthEnd(1)  # Encontra o último dia útil do mês
+    ultimo_dia_util = data + BMonthEnd(1)
+    
+    # Verificação específica para março por conta do feriado de Páscoa
+    if mes == 3:
+        # Define manualmente o dia 28 como último dia útil de março se necessário
+        sexta_feira_santa = pd.Timestamp(datetime(ano, 3, 29))  # Sexta-feira Santa
+        if ultimo_dia_util >= sexta_feira_santa:
+            ultimo_dia_util = sexta_feira_santa - pd.Timedelta(days=1)
     
     datas_desejadas.append(ultimo_dia_util)
 
@@ -79,27 +77,39 @@ for mes in range(11, 14):  # Loop de novembro (11) a janeiro (13) do ano seguint
 for data in datas_desejadas:
     print(data.strftime('%Y-%m-%d'))
 
-
 # Verifique os prints para confirmar se as datas estão sendo calculadas corretamente
-
 
 novas_linhas = []
 ultimas_linhas = df[df['DT_COMPTC'] == df['DT_COMPTC'].max()]
+
+# Suponha que já tenhamos calculado datas_desejadas
+# e tenhamos a data da Sexta-feira Santa para o ano em questão
+
+ano_atual = 2024  # Definindo o ano atual para usar no ajuste da Sexta-feira Santa
+sexta_feira_santa = pd.Timestamp(datetime(ano_atual, 3, 29))  # Sexta-feira Santa
+
 for _, linha in ultimas_linhas.iterrows():
     for data in datas_desejadas:
-        if data > df['DT_COMPTC'].max() + timedelta(days=1):
+        if data > df['DT_COMPTC'].max():
+            # Cria uma cópia da linha para ajustar a data de competência
             nova_linha = linha.copy()
             nova_linha['DT_COMPTC'] = data
+
+            # Se a data for a Sexta-feira Santa, ajuste para o dia útil anterior (28 de março)
+            if nova_linha['DT_COMPTC'] == sexta_feira_santa:
+                nova_linha['DT_COMPTC'] = sexta_feira_santa - pd.Timedelta(days=1)
+
             novas_linhas.append(nova_linha)
 
 df = pd.concat([df, pd.DataFrame(novas_linhas)], ignore_index=True)
 
-df['DT_COMPTC'] = df['DT_COMPTC'] + BMonthEnd(0)
+# Neste ponto, não é necessário adicionar BMonthEnd(0) a 'DT_COMPTC',
+# pois já ajustamos para o último dia útil conforme necessário
 
 
 fundos = pd.concat([df["CNPJ_FUNDO"], df["CNPJ_FUNDO_COTA"]]).unique().tolist()
 start_date = datetime.strptime("06-30-2022", "%m-%d-%Y")
-end_date = datetime.strptime("03-01-2024", "%m-%d-%Y")
+end_date = datetime.strptime("04-01-2024", "%m-%d-%Y")
 q = QuantumHistoricalData(start_date, end_date, fundos, ["PX_LAST"], "MONTHLY")
 precos = q.getData()
 precos = precos.droplevel(1, axis=1)

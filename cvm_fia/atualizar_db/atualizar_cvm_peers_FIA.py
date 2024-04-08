@@ -74,8 +74,8 @@ config = {"EVO": {"ETR_CNPJ": "47.700.200/0001-10", "meu_portfolio": "ETRNTY EVO
 
 
 if __name__ == "__main__":
-    file = "cda_fi_BLC_2_202310.csv"  # alterar o nome do arquivo para o mais recente
-    pl_file = "cda_fi_PL_202310.csv"  # alterar o nome do arquivo para o mais recente
+    file = "cda_fi_BLC_2_202312.csv"  # alterar o nome do arquivo para o mais recente
+    pl_file = "cda_fi_PL_202312.csv"  # alterar o nome do arquivo para o mais recente
     file_path=os.path.join(".", "data")
     conf = config["EVO"]
 
