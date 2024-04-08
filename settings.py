@@ -47,7 +47,7 @@ vertical_layout = dict(
     plot_bgcolor='rgba(0,0,0,0)'
 )
 
-endDate=datetime.strptime("28032024","%d%m%Y")
+endDate=datetime.strptime("31032024","%d%m%Y")
 startDate=datetime.strptime("29022024","%d%m%Y")
 
 fund_data = {"EVO":{

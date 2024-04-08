@@ -1,4 +1,5 @@
 import os
+import calendar
 from datetime import datetime
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Integer, String, SmallInteger, Float, Boolean, Date, Text, LargeBinary
@@ -46,6 +47,7 @@ def make_numero_reunioes_fig(data_final:datetime)->go.Figure:
     port = os.getenv("port")
     database = "estrela_vespertina"
 
+    data_final=calendar.monthrange(data_final.year, data_final.month)[1]   #ultimo dia corrido do mês
     __estrela_vespertina_engine__  = create_engine("mysql+mysqldb://"+user+":"+password+"@"+host+"/"+database) #type: ignore
     __estrela_vespertina_base__.metadata.create_all(__estrela_vespertina_engine__)
     Estrela_vespertina_session= sessionmaker(bind=__estrela_vespertina_engine__)
