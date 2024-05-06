@@ -53,7 +53,7 @@ def n_years_ago(data:datetime.datetime, n:int):
         return datetime.datetime(data.year-n,2,28)
     if data.month==2 and data.day==28 and n%4==0:
         return datetime.datetime(data.year-n,2,29)
-    return datetime.datetime(year=data.year-n,month=end_date.month,day=end_date.day)
+    return datetime.datetime(year=data.year-n,month=data.month,day=data.day)
 
 def last_day_of_previous_month(today:datetime.datetime, index: List[datetime.datetime])->datetime.datetime:
     """

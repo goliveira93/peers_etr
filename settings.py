@@ -47,15 +47,15 @@ vertical_layout = dict(
     plot_bgcolor='rgba(0,0,0,0)'
 )
 
-endDate=datetime.strptime("31032024","%d%m%Y")
-startDate=datetime.strptime("29022024","%d%m%Y")
+#endDate=datetime.strptime("28032024","%d%m%Y")
+#startDate=datetime.strptime("29022024","%d%m%Y")
 
 fund_data = {"EVO":{
                 "cod_britech": "684627",
                 "fund_cnpj" : "47700200000110",
                 "fund_name" : "Etrnty EVO",
-                "filename1" :"47949396000181_47700200000110_ETRNTY_EVO_FIC_FIM_XML_("+startDate.strftime("%d%m%Y")+").XML",
-                "filename2" :"47949396000181_47700200000110_ETRNTY_EVO_FIC_FIM_XML_("+endDate.strftime("%d%m%Y")+").XML",
+               #"filename1" :"47949396000181_47700200000110_ETRNTY_EVO_FIC_FIM_XML_("+startDate.strftime("%d%m%Y")+").XML",
+               # "filename2" :"47949396000181_47700200000110_ETRNTY_EVO_FIC_FIM_XML_("+endDate.strftime("%d%m%Y")+").XML",
                 "additional_member1" : ["EVO","Ações","47700200000110"],
                 "additional_member2" : ["IBX","Ações","IBX"]
              },
@@ -63,8 +63,8 @@ fund_data = {"EVO":{
                 "cod_britech": "685038",
                 "fund_cnpj" : "47716356000190",
                 "fund_name" : "Etrnty ÉON",
-                "filename1" :"47949396000181_47716356000190_ETRNTY_ÉON_MM_MASTER_FIC_FIM_XML_("+startDate.strftime("%d%m%Y")+").XML",
-                "filename2" :"47949396000181_47716356000190_ETRNTY_ÉON_MM_MASTER_FIC_FIM_XML_("+endDate.strftime("%d%m%Y")+").XML",
+               # "filename1" :"47949396000181_47716356000190_ETRNTY_ÉON_MM_MASTER_FIC_FIM_XML_("+startDate.strftime("%d%m%Y")+").XML",
+               # "filename2" :"47949396000181_47716356000190_ETRNTY_ÉON_MM_MASTER_FIC_FIM_XML_("+endDate.strftime("%d%m%Y")+").XML",
                 "additional_member1" : ["EON","Multimercado","47716356000190"],
                 "additional_member2" : ["IFMM","Multimercado","IFMM BTG Pactual"]
              }

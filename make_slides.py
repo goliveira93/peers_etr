@@ -11,7 +11,7 @@ from libs.heatmap import make_heatmap
 import summary
 from conta_reunioes import make_numero_reunioes_fig
 from fund_performance import gera_df_performance, tables
-from settings import endDate
+#from settings import endDate
 import fof
 
 template_macro = 'Template.pptx'
@@ -28,7 +28,7 @@ def decode_layout(slide : Slide)-> tuple[list,list,list]:
     subtitles=[i for i in shape_dict if shape_dict[i][0]==4]
     return pics,bodies,subtitles
 
-def fill_1_grafico(slide:Slide, flat_lists:dict, i:int)->Slide:
+def fill_1_grafico(slide:Slide, flat_lists:dict, i:int, endDate:datetime)->Slide:
     pics,bodies,subtitles=decode_layout(slide)
     if len(bodies)>1:
         slide.placeholders[bodies[0]].text=flat_lists["charts"][i]#type: ignore
@@ -39,52 +39,7 @@ def fill_1_grafico(slide:Slide, flat_lists:dict, i:int)->Slide:
     slide.placeholders[pics[0]].insert_picture(os.path.join(".","figures",flat_lists["files"][i]+".png"))   #type: ignore
     return slide
 
-def fill_ciclo(slide:Slide, flat_lists:dict, i:int)->Slide:
-    pics,bodies,subtitles=decode_layout(slide)
-    slide.placeholders[subtitles[0]].text=flat_lists["subtitles"][i]                                    #type: ignore
-    slide.placeholders[bodies[1]].text=flat_lists["charts"][i]                                          #type: ignore
-    slide.placeholders[bodies[0]].text="gerado em "+datetime.now().strftime("%d-%b-%y")                 #type: ignore
-    slide.placeholders[bodies[2]].text="com dados disponíveis até "+endDate.strftime("%d-%b-%y")        #type: ignore
-    slide.placeholders[pics[0]].insert_picture(os.path.join(".","figures",flat_lists["files"][i]+".png"))   #type: ignore
-    return slide
-
-def fill_texto_direita(slide:Slide, flat_lists:dict, i:int)->Slide:
-    pics,bodies,subtitles=decode_layout(slide)
-    slide.placeholders[bodies[0]].text=flat_lists["charts"][i]                                          #type: ignore
-    slide.placeholders[bodies[1]].text="gerado em "+datetime.now().strftime("%d-%b-%y")                 #type: ignore
-    slide.placeholders[bodies[2]].text="com dados disponíveis até "+endDate.strftime("%d-%b-%y")        #type: ignore
-    if flat_lists["files"][i] is not None:
-        slide.placeholders[pics[0]].insert_picture(os.path.join(".","figures",flat_lists["files"][i]+".png"))    #type: ignore
-    return slide
-
-def fill_generic(slide:Slide)->Slide:
-    pics,bodies,subtitles=decode_layout(slide)
-    for e,i in enumerate(subtitles):
-        slide.placeholders[i].text="subtitle idx: "+str(e)  #type: ignore
-    for e,i in enumerate(bodies):
-        slide.placeholders[i].text="body idx: "+str(e)      #type: ignore
-    for e,i in enumerate(pics):
-        slide.placeholders[i].text="pic idx: "+str(e)       #type: ignore
-    return slide
-
-def fill_2_graficos(slide: Slide, flat_lists: dict) -> Slide:
-    pics, bodies, subtitles = decode_layout(slide)
-
-    slide.placeholders[bodies[2]].text = flat_lists["charts"]["left"]  # type: ignore
-    slide.placeholders[bodies[0]].text = flat_lists["charts"]["right"]  # type: ignore
-    slide.placeholders[bodies[1]].text = "_contribuição do excesso de performance em relação ao fundo Etrnty"  #type: ignore
-    slide.placeholders[bodies[3]].text = " "  # type: ignore
-
-    if flat_lists["files"]["left"] is not None:
-        slide.placeholders[pics[0]].insert_picture(os.path.join(".","figures", flat_lists["files"]["left"] + ".png"))  # type: ignore
-    if flat_lists["files"]["right"] is not None:
-        slide.placeholders[pics[1]].insert_picture(os.path.join(".","figures", flat_lists["files"]["right"] + ".png"))  # type: ignore
-    if subtitles:
-        slide.placeholders[subtitles[0]].text = f"Etrnty vs {flat_lists['charts']['right']}"                            #type: ignore
-
-    return slide
-
-def fill_performance_comp(slide, args: dict) -> Slide:
+def fill_performance_comp(slide, args: dict, endDate:datetime) -> Slide:
     pics, bodies, subtitles = decode_layout(slide)
     slide.placeholders[0].text=args["title"]
     if args["files"][0] is not None:
@@ -93,7 +48,7 @@ def fill_performance_comp(slide, args: dict) -> Slide:
         slide.placeholders[pics[1]].insert_picture(os.path.join(".","figures", args["files"][1] + ".png"))  # type: ignore
     return slide
 
-def fill_returns(slide: Slide, df_final_ultimo_mes, gestor: str, periodo: str) -> Slide:
+def fill_returns(slide: Slide, df_final_ultimo_mes, gestor: str, periodo: str, endDate:datetime) -> Slide:
     # Encontra a linha no dataframe onde a coluna 'Gestor' é igual ao gestor desejado
     filtro = df_final_ultimo_mes['Gestor'] == gestor
     # Localiza os placeholders onde o texto deve ser inserido
@@ -189,8 +144,10 @@ def cria_slides():
 
 
 if __name__=="__main__":
+    endDate=datetime.strptime("30042024","%d%m%Y")
+    startDate=datetime.strptime("28032024","%d%m%Y")
     filename=""
-    layouts = {"1_grafico": fill_1_grafico, "ciclo": fill_ciclo, "2_graficos": fill_2_graficos, "texto_direita": fill_texto_direita, "comps_slide": fill_1_grafico}
+    layouts = {"1_grafico": fill_1_grafico}
     gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
 
     parser = argparse.ArgumentParser(description='make_slides')
@@ -217,8 +174,8 @@ if __name__=="__main__":
                     f.show()  
         if args.parcial is None or args.parcial=="fof":
             figs=[]
-            figs=figs+fof.performance_attrib_fof("EON")  #type: ignore
-            figs=figs+fof.performance_attrib_fof("EVO")  #type: ignore
+            figs=figs+fof.performance_attrib_fof("EON",startDate,endDate)  #type: ignore
+            figs=figs+fof.performance_attrib_fof("EVO",startDate,endDate)  #type: ignore
             if args.parcial is not None:
                 for f in figs:
                     f.show()

@@ -17,13 +17,12 @@ from pptx.enum.text import MSO_AUTO_SIZE
 from pptx.enum.shapes import MSO_SHAPE # type: ignore
 from pptx.enum.text import PP_ALIGN  # type: ignore
 from summary import get_FOF_price_change  #type: ignore
-from settings import britech_data_final
+from settings import endDate
 
 carteira_eon = [
     {"Nome":"Ibiuna STB","Ticker":"27825226000188","Source":"Quantum"},
     {"Nome":"Kapitalo Zeta","Ticker":"12105992000109","Source":"Quantum"},
     {"Nome":"Legacy Alpha","Ticker":"49722651000184","Source":"Quantum", "Proxy ticker":"31666755000153", "Proxy source":"Quantum"},
-    {"Nome":"SPX Raptor","Ticker":"26516247000159","Source":"Quantum", "Proxy ticker":"12809201000113", "Proxy source":"Quantum"},
     {"Nome":"SPX Nimitz","Ticker":"12831360000114","Source":"Quantum"},
     {"Nome":"Vinland Macro Plus","Ticker":"30593439000136","Source":"Quantum"},
     {"Nome":"Giant Zarathustra","Ticker":"11052478000181","Source":"Quantum"},
@@ -127,8 +126,8 @@ def df_to_slide(my_df:pd.DataFrame, my_slide:Slide, my_titulo:str)->Slide:
 
 
 if __name__=="__main__":
-    end_date=britech_data_final
-    end_date=datetime(2024,2,29)
+    end_date=endDate
+    #end_date=datetime(2024,3,28)
     prs = Presentation(os.path.join(".","Template.pptx"))    # Só precisa abrir o arquivo 1x
     carteira_evo+=[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
     carteira_eon+=[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"}]

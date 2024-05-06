@@ -7,7 +7,7 @@ from summary import last_day_of_previous_month
 import plotly.graph_objects as go
 from et_lib.ET_Data_Reader import BasketHistoricalData
 from gb import Carteira
-from settings import colors, chart_layout, vertical_layout, fund_data, startDate, endDate
+from settings import colors, chart_layout, vertical_layout, fund_data#, startDate, endDate
 
    
 def plot_returns(df:pd.DataFrame):
@@ -86,7 +86,7 @@ def limpa_dataframe(df:pd.DataFrame)->pd.DataFrame:
         df.loc["Dynamo Cougar","CNPJ"]="44769980000167"
     return df
 
-def performance_attrib_fof(fof_name=Literal["EON"]|Literal["EVO"])->List[go.Figure]:
+def performance_attrib_fof(fof_name=Literal["EON"]|Literal["EVO"],startDate:datetime=datetime.today(),endDate:datetime=datetime.today())->List[go.Figure]:
     df=[]
     fund=fund_data[str(fof_name)]
     print(fof_name+" baixando carteiras da britech.")

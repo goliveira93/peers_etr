@@ -13,7 +13,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":[]//["--parcial","apenas_slides"]
+            "args":["--parcial","analitico"]
         }
     ]
 }
