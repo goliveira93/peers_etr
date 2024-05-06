@@ -88,7 +88,7 @@ def calcula_retorno_ytd_benchmark(benchmark: str, start_date: datetime, end_date
     return retornos
 
 
-def gera_df_performance(fundo: str, save_files: bool = True) -> pd.DataFrame:
+def gera_df_performance(fundo: str, start_date:datetime, end_date:datetime, save_files: bool = True) -> pd.DataFrame:
     diretorio_base = os.path.join(".", "figures")
     if not os.path.exists(diretorio_base):
         os.makedirs(diretorio_base)
@@ -126,8 +126,8 @@ def gera_df_performance(fundo: str, save_files: bool = True) -> pd.DataFrame:
 
 
     # Data de início e fim para o cálculo do retorno
-    start_date = datetime(2024,2,29)
-    end_date = datetime(2024,3,28)
+    #start_date = datetime(2024,2,29)
+    #end_date = datetime(2024,3,28)
 
     fundos_series = df["NM_FUNDO_COTA"].drop_duplicates()
 

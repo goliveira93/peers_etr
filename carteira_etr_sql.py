@@ -72,6 +72,8 @@ for param in params:
     # Busca todas as datas únicas da tabela
     query_dates = 'SELECT DISTINCT DT_COMPTC FROM '+param["query_table_estimado"]
     df_dates = pd.read_sql(query_dates, con=engine)
+    print("df_dates - carteira_etr_sql.py linha 75:")
+    print(df_dates)
 
     # Converte para datetime (se já não for)
     df_dates['DT_COMPTC'] = pd.to_datetime(df_dates['DT_COMPTC'])

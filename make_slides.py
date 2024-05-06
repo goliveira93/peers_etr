@@ -187,7 +187,7 @@ if __name__=="__main__":
 
             for fund, tipo, prefix, slide_top_color in zip(["EON","EVO"],["Multimercado","Ações"],["FIM","FIA"],["blue","gray"]):
                 #df com as peformances dos fundos dentro dos FoFs da concorrência
-                df_mtd, df_ytd = gera_df_performance(fund, save_files)
+                df_mtd, df_ytd = gera_df_performance(fund,startDate,endDate, save_files)
                 #Gera heatimap com posições dos concorrentes
                 df=gera_df(fund,"MTD",False)
                 df=df[df["Gestor"].isin(gestores)]
