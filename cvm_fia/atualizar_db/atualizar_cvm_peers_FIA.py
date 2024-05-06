@@ -74,8 +74,8 @@ config = {"EVO": {"ETR_CNPJ": "47.700.200/0001-10", "meu_portfolio": "ETRNTY EVO
 
 
 if __name__ == "__main__":
-    file = "cda_fi_BLC_2_202312.csv"  # alterar o nome do arquivo para o mais recente
-    pl_file = "cda_fi_PL_202312.csv"  # alterar o nome do arquivo para o mais recente
+    file = "cda_fi_BLC_2_202401.csv"  # alterar o nome do arquivo para o mais recente
+    pl_file = "cda_fi_PL_202401.csv"  # alterar o nome do arquivo para o mais recente
     file_path=os.path.join(".", "data")
     conf = config["EVO"]
 
@@ -109,8 +109,8 @@ if __name__ == "__main__":
     # result = result.loc[result["Gestor"] == "Mandatto"]  # MUDAR
     fundos = pd.concat(
         [result["CNPJ_FUNDO"], result["CNPJ_FUNDO_COTA"]]).unique().tolist()
-    start_date = datetime.strptime("12-30-2022", "%m-%d-%Y")
-    end_date = datetime.strptime("03-01-2024", "%m-%d-%Y")
+    start_date = datetime.strptime("12-30-2023", "%m-%d-%Y")
+    end_date = datetime.strptime("06-01-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
                               "PX_LAST"], "MONTHLY")
 

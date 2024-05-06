@@ -26,7 +26,7 @@ if response.status_code == 200:
     for zip_file in reversed(all_zip_files):
         href = zip_file['href']
         text = zip_file.next_sibling
-        if text and '2023' in href:
+        if text and '2024' in href:
             size_match = re.search(r'(\d+)M', text)
             if size_match and int(size_match.group(1)) >= 15:
                 download_link = url_base + href

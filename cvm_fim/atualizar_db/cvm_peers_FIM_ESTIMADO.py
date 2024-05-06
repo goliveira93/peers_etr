@@ -52,7 +52,7 @@ calendario = Brazil()
 ano_atual = 2024
 datas_desejadas = []
 
-for mes in range(1, 4):  # Loop de janeiro (1) a março (3)
+for mes in range(2, 5):  # Loop de janeiro (1) a março (3)
     if mes > 12:  # Ajuste para janeiro do ano seguinte, se necessário
         ano = ano_atual + 1
         mes_ajustado = 1
@@ -108,8 +108,8 @@ df = pd.concat([df, pd.DataFrame(novas_linhas)], ignore_index=True)
 
 
 fundos = pd.concat([df["CNPJ_FUNDO"], df["CNPJ_FUNDO_COTA"]]).unique().tolist()
-start_date = datetime.strptime("06-30-2022", "%m-%d-%Y")
-end_date = datetime.strptime("04-01-2024", "%m-%d-%Y")
+start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
+end_date = datetime.strptime("06-01-2024", "%m-%d-%Y")
 q = QuantumHistoricalData(start_date, end_date, fundos, ["PX_LAST"], "MONTHLY")
 precos = q.getData()
 precos = precos.droplevel(1, axis=1)
