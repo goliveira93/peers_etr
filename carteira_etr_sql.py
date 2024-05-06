@@ -57,7 +57,7 @@ engine = create_engine(
 
 params=[
     {"query_table":"cvm_peers_fim","query_table_estimado":"cvm_peers_fim_estimado","fund_name":"ETRNTY EON MM MASTER FIC FIM","fof_cnpj":"47.716.356/0001-90"},
-    {"query_table":"cvm_peers_fia", "query_table":"cvm_peers_fia_estimado", "fund_name":"ETRNTY EVO FIC FIM","fof_cnpj":"47.700.200/0001-10" }]
+    {"query_table":"cvm_peers_fia", "query_table_estimado":"cvm_peers_fia_estimado", "fund_name":"ETRNTY EVO FIC FIM","fof_cnpj":"47.700.200/0001-10" }]
 
 for param in params:
     query_nm_fundo = 'SELECT CNPJ_FUNDO_COTA, NM_FUNDO_COTA FROM '+param["query_table"]
@@ -101,7 +101,7 @@ for param in params:
 
         fundos = pd.concat([transformed_fund["CNPJ_FUNDO"], transformed_fund["CNPJ_FUNDO_COTA"]]).unique().tolist()
         start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
-        end_date = datetime.strptime("02-01-2024", "%m-%d-%Y")
+        end_date = datetime.strptime("06-01-2024", "%m-%d-%Y")
         q = QuantumHistoricalData(start_date, end_date, fundos, ["PX_LAST"], "MONTHLY")
 
         precos = q.getData()
@@ -128,9 +128,9 @@ for param in params:
             transformed_fund['DT_COMPTC'])
 
         # Atualizando 'DT_COMPTC' para o último dia do mês
-        ret_melt_cota['DT_COMPTC'] += MonthEnd(0)
-        ret_melt_fundo['DT_COMPTC'] += MonthEnd(0)
-        transformed_fund['DT_COMPTC'] += MonthEnd(0)
+        #ret_melt_cota['DT_COMPTC'] += MonthEnd(0)
+        #ret_melt_fundo['DT_COMPTC'] += MonthEnd(0)
+        #transformed_fund['DT_COMPTC'] += MonthEnd(0)
 
         # Primeiro merge com CNPJ_FUNDO_COTA
         final_result = pd.merge(transformed_fund, ret_melt_cota, how='left', on=[
