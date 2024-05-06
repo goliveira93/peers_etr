@@ -213,7 +213,7 @@ def gera_df_performance(fundo: str, start_date:datetime, end_date:datetime, save
         # Exibindo e salvando o gráfico MTD
         fig_mtd.write_image(os.path.join(diretorio_base, f"{table[0]}_retorno_mtd.png"))
         # fig_mtd.show()
-        print("Gerando retornos MTD")
+        print("Gerando retornos MTD: "+fundo)
 
         # Gráfico YTD
         fig_ytd = go.Figure(go.Bar(
@@ -254,6 +254,6 @@ def gera_df_performance(fundo: str, start_date:datetime, end_date:datetime, save
         # Exibindo e salvando o gráfico YTD
         fig_ytd.write_image(os.path.join(diretorio_base, f"{table[0]}_retorno_ytd.png"))
         # fig_ytd.show()
-        print("Gerando retornos YTD")
+        print("Gerando retornos YTD: "+fundo)
 
     return df_retornos_mensais, df_retornos_ytd

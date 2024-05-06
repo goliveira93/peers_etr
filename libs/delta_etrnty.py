@@ -103,9 +103,9 @@ def gera_df(fundo:str, periodo:str, save_files:bool=True)->pd.DataFrame:
     engine = create_engine(
         f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}")
 
-    query = "SELECT Gestor, DT_COMPTC, CNPJ_FUNDO, CNPJ_FUNDO_COTA, NM_FUNDO_COTA, PESO, RETORNO, RETORNO_PEER, CONTRIBUICAO FROM "+table[0]
+    query = "SELECT Gestor, DT_COMPTC, CNPJ_FUNDO, CNPJ_FUNDO_COTA, NM_FUNDO_COTA, PESO, RETORNO, RETORNO_PEER, CONTRIBUICAO FROM "+table[0]#+ " WHERE DT_COMPTC>'2023-12-31'"
 
-    query2 = "SELECT Gestor, DT_COMPTC, CNPJ_FUNDO, CNPJ_FUNDO_COTA, NM_FUNDO_COTA, PESO, RETORNO, RETORNO_PEER, CONTRIBUICAO FROM "+table[1]
+    query2 = "SELECT Gestor, DT_COMPTC, CNPJ_FUNDO, CNPJ_FUNDO_COTA, NM_FUNDO_COTA, PESO, RETORNO, RETORNO_PEER, CONTRIBUICAO FROM "+table[1]#+ " WHERE DT_COMPTC>'2023-12-31'"
 
     query_combinada = query + ' UNION ALL ' + query2
 
@@ -149,14 +149,15 @@ def gera_df(fundo:str, periodo:str, save_files:bool=True)->pd.DataFrame:
         soma_peso = df[(df['Gestor'] == row['Gestor']) & (
             df['ANO_MES'] == row['ANO_MES'])]['PESO'].sum()
 
-        nova_linha = {
-            'Gestor': row['Gestor'],
-            'ANO_MES': row['ANO_MES'],
-            'CONTRIBUICAO': row['DIFERENCA_RETORNO_COMPOSTO_ACUMULADO'],
-            'FUNDO_AJUSTADO': 'Outros',  # adicionando o FUNDO_AJUSTADO
-            'PESO': 1 - soma_peso  # calculando o novo peso
-        }
-        novas_linhas.append(nova_linha)
+        if soma_peso!=1:
+            nova_linha = {
+                'Gestor': row['Gestor'],
+                'ANO_MES': row['ANO_MES'],
+                'CONTRIBUICAO': row['DIFERENCA_RETORNO_COMPOSTO_ACUMULADO'],
+                'FUNDO_AJUSTADO': 'Outros',  # adicionando o FUNDO_AJUSTADO
+                'PESO': 1 - soma_peso  # calculando o novo peso
+            }
+            novas_linhas.append(nova_linha)
     df_novas_linhas = pd.DataFrame(novas_linhas)
 
     # Seu código para concatenar df_novas_linhas com df_final
