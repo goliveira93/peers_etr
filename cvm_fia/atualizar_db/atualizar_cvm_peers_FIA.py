@@ -109,7 +109,7 @@ if __name__ == "__main__":
     # result = result.loc[result["Gestor"] == "Mandatto"]  # MUDAR
     fundos = pd.concat(
         [result["CNPJ_FUNDO"], result["CNPJ_FUNDO_COTA"]]).unique().tolist()
-    start_date = datetime.strptime("12-30-2023", "%m-%d-%Y")
+    start_date = datetime.strptime("01-29-2022", "%m-%d-%Y")
     end_date = datetime.strptime("06-01-2024", "%m-%d-%Y")
     q = QuantumHistoricalData(start_date, end_date, fundos, [
                               "PX_LAST"], "MONTHLY")
