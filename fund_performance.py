@@ -127,7 +127,7 @@ def gera_df_performance(fundo: str, start_date:datetime, end_date:datetime, save
 
     # Data de início e fim para o cálculo do retorno
     #start_date = datetime(2024,2,29)
-    #end_date = datetime(2024,3,28)
+    end_date = datetime(2024,4,30)
 
     fundos_series = df["NM_FUNDO_COTA"].drop_duplicates()
 

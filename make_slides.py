@@ -162,10 +162,10 @@ def cria_slides(endDate:datetime):
 
 if __name__=="__main__":
     endDate=datetime.strptime("30042024","%d%m%Y")
-    startDate=datetime.strptime("28032024","%d%m%Y")
+    startDate=datetime.strptime("31012024","%d%m%Y")
     filename=""
     layouts = {"1_grafico": fill_1_grafico, "2_graficos": fill_2_graficos}
-    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Warren", "Wright", "XPA"]
 
     parser = argparse.ArgumentParser(description='make_slides')
     # Adicione argumentos usando o método add_argument
