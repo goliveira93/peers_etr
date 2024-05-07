@@ -162,7 +162,9 @@ def cria_slides(endDate:datetime):
 
 if __name__=="__main__":
     endDate=datetime.strptime("30042024","%d%m%Y")
-    startDate=datetime.strptime("31012024","%d%m%Y")
+    startDate=datetime.strptime("28032024","%d%m%Y")
+    YTD_base_db=datetime.strptime("31012024","%d%m%Y")
+    YTD_date=datetime(2023,12,29)
     filename=""
     layouts = {"1_grafico": fill_1_grafico, "2_graficos": fill_2_graficos}
     gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Warren", "Wright", "XPA"]
@@ -182,7 +184,7 @@ if __name__=="__main__":
             figs.append(make_numero_reunioes_fig(endDate))
             #faz graficos de barra com performance absoluta YTD, MTD para eon e evo
             try:
-                figs=figs+summary.make_summary_figs(endDate,gestores)
+                figs=figs+summary.make_summary_figs(endDate,gestores,YTD_date)
             except ValueError as e:
                 print(e)
                 pass
@@ -204,7 +206,7 @@ if __name__=="__main__":
 
             for fund, tipo, prefix, slide_top_color in zip(["EON","EVO"],["Multimercado","Ações"],["FIM","FIA"],["blue","gray"]):
                 #df com as peformances dos fundos dentro dos FoFs da concorrência
-                df_mtd, df_ytd = gera_df_performance(fund,startDate,endDate, save_files)
+                df_mtd, df_ytd = gera_df_performance(fund,YTD_base_db,endDate, save_files)
                 #Gera heatimap com posições dos concorrentes
                 df=gera_df(fund,"MTD",False)
                 df=df[df["Gestor"].isin(gestores)]

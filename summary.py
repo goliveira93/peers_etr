@@ -232,12 +232,12 @@ def get_beta_chart(title: str, start_date:datetime.datetime, end_date:datetime.d
     fig.update_layout(margin=dict(t=100))
     return fig
 
-def make_summary_figs(end_date:datetime.datetime, gestores:list)->List[go.Figure]:
+def make_summary_figs(end_date:datetime.datetime, gestores:list, YTD_date:datetime)->List[go.Figure]:
     peers_evo=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIAS if i[1] in gestores]+[{"Nome":"IBX","Ticker":"IBX","Source":"Quantum"}]
     peers_eon=[{"Nome":i[1],"Ticker":i[0].replace(".","").replace("/","").replace("-",""),"Source":"Quantum"} for i in FIMS if i[1] in gestores]+[{"Nome":"IFMM","Ticker":"IFMM BTG PACTUAL","Source":"Quantum"},{"Nome":"CDI","Ticker":"CDI","Source":"Quantum"} ]
 
     print("Make summary figs running...")
-    YTD_date=datetime.datetime(2023,12,29)
+    
 
     it={"eon":peers_eon,"evo":peers_evo}
     tit={"eon":"Multimercado","evo":"Ações"}
