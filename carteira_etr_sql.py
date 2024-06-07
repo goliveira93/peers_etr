@@ -13,13 +13,13 @@ from pandas.tseries.offsets import MonthEnd
 def get_fof_britech(fundo:Literal["ETRNTY EON MM MASTER FIC FIM"]|Literal["ETRNTY EVO FIC FIM"], data_pos:datetime=datetime.today())->pd.DataFrame:
     if fundo.upper()=="ETRNTY EON MM MASTER FIC FIM":
         conta="685038"
-        cod_etrnty="ÉON"
+        # cod_etrnty="ÉON"
     elif fundo.upper()=="ETRNTY EVO FIC FIM":
         conta="684627"
-        cod_etrnty="EVO"
+        # cod_etrnty="EVO"
     else:
         return pd.DataFrame()
-    df= Carteira.get_posicao_carteira(ids_carteira=conta,date_pos=data_pos,cod_etr=cod_etrnty)
+    df= Carteira.get_posicao_carteira(ids_carteira=conta,date_pos=data_pos)
     df=df.loc[df["Blotter"]==False]
     df=df.loc[df["DescricaoTipoPosicao"]=="Fundo"]
     df=df[["CNPJ","ValorBruto","QtdeTotal"]]
