@@ -90,8 +90,8 @@ def performance_attrib_fof(fof_name=Literal["EON"]|Literal["EVO"],startDate:date
     df=[]
     fund=fund_data[str(fof_name)]
     print(fof_name+" baixando carteiras da britech.")
-    df0=Carteira.get_posicao_carteira(ids_carteira=fund["cod_britech"],date_pos=startDate,cod_etr=fof_name)
-    df1=Carteira.get_posicao_carteira(ids_carteira=fund["cod_britech"],date_pos=endDate,cod_etr=fof_name)
+    df0=Carteira.get_posicao_carteira(ids_carteira=[fund["cod_britech"]],date_pos=startDate,cod_etr=fof_name)
+    df1=Carteira.get_posicao_carteira(ids_carteira=[fund["cod_britech"]],date_pos=endDate,cod_etr=fof_name)
 
     cnpj_dict={df0.loc[i,"CNPJ"]:str(df0.loc[i,"cod_etrnty"]) for i in df0.index}|{df1.loc[i,"CNPJ"]:str(df1.loc[i,"cod_etrnty"]) for i in df1.index}
     cnpj_dict[fund["fund_cnpj"]]=str(fof_name)
