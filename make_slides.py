@@ -220,4 +220,5 @@ if __name__=="__main__":
         filename = "Comparacao_"
     prs.save(os.path.join("PPT", filename + endDate.strftime("%m-%y") + ".pptx"))
     print("Apresentação salva como " + filename + endDate.strftime("%m-%y") + ".pptx")
+    print("Lembre de rodar o make_report.py agora.")
 

@@ -19,7 +19,7 @@ def get_fof_britech(fundo:Literal["ETRNTY EON MM MASTER FIC FIM"]|Literal["ETRNT
         # cod_etrnty="EVO"
     else:
         return pd.DataFrame()
-    df= Carteira.get_posicao_carteira(ids_carteira=conta,date_pos=data_pos)
+    df= Carteira.get_posicao_carteira(ids_carteira=[conta],date_pos=data_pos.date())
     df=df.loc[df["Blotter"]==False]
     df=df.loc[df["DescricaoTipoPosicao"]=="Fundo"]
     df=df[["CNPJ","ValorBruto","QtdeTotal"]]
