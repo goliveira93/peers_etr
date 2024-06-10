@@ -161,8 +161,8 @@ def cria_slides(endDate:datetime):
 
 
 if __name__=="__main__":
-    endDate=datetime.strptime("30042024","%d%m%Y")
-    startDate=datetime.strptime("28032024","%d%m%Y")
+    endDate=datetime.strptime("31052024","%d%m%Y")
+    startDate=datetime.strptime("30042024","%d%m%Y")
     YTD_base_db=datetime.strptime("31012024","%d%m%Y")
     YTD_date=datetime(2023,12,29)
     filename=""
@@ -193,8 +193,8 @@ if __name__=="__main__":
                     f.show()  
         if args.parcial is None or args.parcial=="fof":
             figs=[]
-            figs=figs+fof.performance_attrib_fof("EON",startDate,endDate)  #type: ignore
-            figs=figs+fof.performance_attrib_fof("EVO",startDate,endDate)  #type: ignore
+            figs=figs+fof.performance_attrib_fof("EON",startDate.date(),endDate.date())  #type: ignore
+            figs=figs+fof.performance_attrib_fof("EVO",startDate.date(),endDate.date())  #type: ignore
             if args.parcial is not None:
                 for f in figs:
                     f.show()

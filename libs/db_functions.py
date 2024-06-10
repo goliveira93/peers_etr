@@ -134,6 +134,8 @@ def get_fund_return(NM_FUNDO_COTA:str, start_date:datetime, end_date:datetime)->
         ).all()
         ret=0
         for r in results:
+            if r.mean_retorno is None:
+                raise ValueError("Não foi possível encontrar retorno para o fundo: "+NM_FUNDO_COTA+" ("+start_date.strftime("%Y-%m-%d")+" : "+end_date.strftime("%Y-%m-%d")+")")
             ret=(1+ret)*(1+r.mean_retorno)-1
     return ret
 
