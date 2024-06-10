@@ -40,10 +40,10 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 data_dir = os.path.join(base_dir, "data")
 all_masters_list = []
 
-base_pl_file = "cda_fi_PL_2{}.csv"
-base_blc_file = "cda_fi_BLC_2_2{}.csv"
+base_pl_file = "cda_fi_PL_2024{}.csv"
+base_blc_file = "cda_fi_BLC_2_2024{}.csv"
 
-for month in range(1, 11):  # Altere para range(1, 12) se você tiver dados para todos os meses
+for month in range(1, 13):  # Altere para range(1, 12) se você tiver dados para todos os meses
     month_str = f"{month:02d}"
     pl_file = base_pl_file.format(month_str)
     blc_file = base_blc_file.format(month_str)
