@@ -167,7 +167,7 @@ if __name__=="__main__":
     YTD_date=datetime(2023,12,29)
     filename=""
     layouts = {"1_grafico": fill_1_grafico, "2_graficos": fill_2_graficos}
-    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Warren", "Wright", "XPA"]
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Warren", "We Capital", "Wright", "XPA"]
 
     parser = argparse.ArgumentParser(description='make_slides')
     # Adicione argumentos usando o método add_argument

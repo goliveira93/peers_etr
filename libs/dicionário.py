@@ -29,7 +29,9 @@ PEERS = [["26.470.647/0001-70", "Mandatto"],
          ["36.727.650/0001-80", "Portofino"],
          ["37.227.781/0001-61", "Portofino"],
         ["42.754.331/0001-67", "FoF Itau"],
-        ["14.096.759/0001-24", "FoF Itau"]
+        ["14.096.759/0001-24", "FoF Itau"],
+        ["34.687.600/0001-91", "We Capital"],
+        ["41.575.654/0001-20", "We Capital"]
         ]
 
 # Define o diretório base subindo um nível a partir de 'libs'
@@ -38,8 +40,8 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 data_dir = os.path.join(base_dir, "data")
 all_masters_list = []
 
-base_pl_file = "cda_fi_PL_2023{}.csv"
-base_blc_file = "cda_fi_BLC_2_2023{}.csv"
+base_pl_file = "cda_fi_PL_2{}.csv"
+base_blc_file = "cda_fi_BLC_2_2{}.csv"
 
 for month in range(1, 11):  # Altere para range(1, 12) se você tiver dados para todos os meses
     month_str = f"{month:02d}"
