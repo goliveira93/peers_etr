@@ -137,16 +137,21 @@ def gera_df_performance(fundo: str, start_date:datetime, end_date:datetime, save
 
     # Itera sobre os nomes dos fundos em fundos_series
     for fundo in fundos_series:
-        # Chama a função get_fund_return para obter o retorno mensal para o fundo atual
-        retorno_mensal = get_fund_return(fundo, end_date, end_date)
-        # Adiciona o retorno mensal à lista se for diferente de NaN e não estiver vazio
-        if not pd.isnull(retorno_mensal) and retorno_mensal != 0:
-            retornos_mensais.append({"NM_FUNDO_COTA": fundo, "RETORNO_MENSAL": retorno_mensal})
+        try:
+            # Chama a função get_fund_return para obter o retorno mensal para o fundo atual
+            retorno_mensal = get_fund_return(fundo, end_date, end_date)
+            # Adiciona o retorno mensal à lista se for diferente de NaN e não estiver vazio
+            if not pd.isnull(retorno_mensal) and retorno_mensal != 0:
+                retornos_mensais.append({"NM_FUNDO_COTA": fundo, "RETORNO_MENSAL": retorno_mensal})
 
-        # Calcular o retorno YTD
-        retorno_ytd = get_fund_return(fundo, start_date, end_date)
-        if not pd.isnull(retorno_ytd) and retorno_ytd != 0:
-            retornos_ytd.append({"NM_FUNDO_COTA": fundo, "RETORNO_YTD": retorno_ytd})
+            # Calcular o retorno YTD
+            retorno_ytd = get_fund_return(fundo, start_date, end_date)
+            if not pd.isnull(retorno_ytd) and retorno_ytd != 0:
+                retornos_ytd.append({"NM_FUNDO_COTA": fundo, "RETORNO_YTD": retorno_ytd})
+        
+        except ValueError as e:
+            print(f"Erro encontrado para o fundo {fundo}: {e}")
+            continue  # Pula para o próximo fundo
 
     # Converte as listas de retornos mensais e YTD em DataFrames
     df_retornos_mensais = pd.DataFrame(retornos_mensais)

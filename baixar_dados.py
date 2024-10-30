@@ -28,7 +28,7 @@ if response.status_code == 200:
         text = zip_file.next_sibling
         if text and '2024' in href:
             size_match = re.search(r'(\d+)M', text)
-            if size_match and int(size_match.group(1)) >= 15:
+            if size_match and int(size_match.group(1)) > 20:
                 download_link = url_base + href
                 response = requests.get(download_link)
                 if response.status_code == 200:

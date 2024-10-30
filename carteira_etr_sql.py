@@ -101,11 +101,12 @@ for param in params:
 
         fundos = pd.concat([transformed_fund["CNPJ_FUNDO"], transformed_fund["CNPJ_FUNDO_COTA"]]).unique().tolist()
         start_date = datetime.strptime("06-30-2023", "%m-%d-%Y")
-        end_date = datetime.strptime("06-01-2024", "%m-%d-%Y")
+        end_date = datetime.strptime("10-07-2024", "%m-%d-%Y")
         q = QuantumHistoricalData(start_date, end_date, fundos, ["PX_LAST"], "MONTHLY")
 
         precos = q.getData()
         precos = precos.droplevel(1, axis=1)
+        
 
         ret = precos / precos.shift(1) - 1
 

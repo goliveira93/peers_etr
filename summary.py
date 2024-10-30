@@ -276,6 +276,6 @@ def make_summary_figs(end_date:datetime.datetime, gestores:list, YTD_date:dateti
     return figs
 
 if __name__=="__main__":
-    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Taler", "Vitra", "Warren", "Wright", "XPA"]
-    end_date=datetime.datetime.strptime("2023-11-30","%Y-%m-%d")
+    gestores = ["Brain", "Consenso", "Etrnty", "G5", "JBFO", "Mandatto", "Portofino", "Pragma", "Vitra", "Warren", "Wright", "XPA"]
+    end_date=datetime.datetime.strptime("2024-08-30","%Y-%m-%d")
     make_summary_figs(end_date,gestores)
