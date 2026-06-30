@@ -62,27 +62,6 @@ def upload_to_db(list_of_pairs):
     session.commit()
     session.close()
 
-def fetch_all_fundos():
-    """
-    Pega todos os fundos da tabela
-    """
-    # Start a new session
-    session = CVM_datafeed_session()
-    # Query all the entries in the fundos_sinonimos table
-    results = session.query(Fundos_sinonimos).all()
-
-    # Convert each entry to a two-item list
-    fundos_list = [[entry.fundo_nome, entry.sinonimo] for entry in results]
-    fundos_list +=[[entry.nome_master, entry.sinonimo] for entry in results]
-    fundos_list +=[[entry.cnpj_fundo_cota, entry.sinonimo] for entry in results]
-    fundos_dict={i[0]:i[1] for i in fundos_list}
-
-    # Close the session
-    session.close()
-
-    return fundos_dict
-
-
 def fetch_all_fundos_list():
     """
     Pega todos os fundos da tabela
@@ -138,8 +117,3 @@ def get_fund_return(NM_FUNDO_COTA:str, start_date:datetime, end_date:datetime)->
                 raise ValueError("Não foi possível encontrar retorno para o fundo: "+NM_FUNDO_COTA+" ("+start_date.strftime("%Y-%m-%d")+" : "+end_date.strftime("%Y-%m-%d")+")")
             ret=(1+ret)*(1+r.mean_retorno)-1
     return ret
-
-if __name__=="__main__":
-    #l=fetch_arquivo_cmv(datetime.strptime("2023-06-30","%Y-%m-%d"))
-    #print(l)
-    print(get_fund_return("Dynamo",datetime(2024,7,30),datetime(2024,7,31)))

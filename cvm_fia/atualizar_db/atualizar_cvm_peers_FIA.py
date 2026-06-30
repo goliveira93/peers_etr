@@ -9,7 +9,6 @@ import pandas as pd
 import plotly.graph_objects as go
 from et_lib.ET_Meu_portfolio import Meu_portfolio_connection
 from et_lib.ET_Data_Reader import QuantumHistoricalData
-from sqlalchemy import create_engine
 from sqlalchemy import create_engine, Table, Column, String, MetaData, Float, Date, Text
 from pandas.tseries.offsets import MonthEnd
 from dotenv import load_dotenv

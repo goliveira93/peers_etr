@@ -1,8 +1,3 @@
-import json
-import pandas as pd
-import os
-import sys
-sys.path.append('C:\\Users\\Gustavo.Oliveira\\programs\\dataset_cvm')
 from libs.db_functions import fetch_all_fundos_list
 
 

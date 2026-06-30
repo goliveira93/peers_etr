@@ -7,11 +7,8 @@ import os
 import pandas as pd
 import plotly.graph_objects as go
 from libs.delta_etrnty import gera_df
-from libs.db_functions import fetch_all_fundos
 from et_lib.ET_Meu_portfolio import Meu_portfolio_connection
 
-
-sinonimos= fetch_all_fundos()
 
 def read_my_portfolio(fund_name:str, fund_pl:pd.DataFrame, ETR_CNPJ:str)->pd.DataFrame:
     """
@@ -44,18 +41,17 @@ def make_heatmap(fund:str, df:pd.DataFrame):
     x=pivot_table[pivot_table>0].count(axis=1).sort_values(ascending=False).index
     pivot_table=pivot_table.loc[x]
     idx=pivot_table.index
-    if True:
-        idx=[txt.replace("INVESTIMENTO EM AÇÕES","") for txt in idx]
-        idx=[txt.replace("INVESTIMENTO NO EXTERIOR","") for txt in idx]
-        idx=[txt.replace(" FUNDO DE INVESTIMENTO EM AÇÕES","") for txt in idx]
-        idx=[txt.replace(" FUNDO DE INVESTIMENTO MULTIMERCADO","") for txt in idx]
-        idx=[txt.replace(" FUNDOS DE INVESTIMENTO MULTIMERCADO","") for txt in idx]
-        idx=[txt.replace(" FUNDO DE INVESTIMENTO EM COTAS","") for txt in idx]
-        idx=[txt.replace(" CRÉDITO PRIVADO","") for txt in idx]
-        idx=[txt.replace(" FUNDO DE INVESTIMENTO","") for txt in idx]
-        idx=[txt.replace(" DE AÇÕES","") for txt in idx]
-        idx=[txt.replace(" DE ACOES","") for txt in idx]
-        idx=[txt.replace(" FUNDO DE","") for txt in idx]
+    idx=[txt.replace("INVESTIMENTO EM AÇÕES","") for txt in idx]
+    idx=[txt.replace("INVESTIMENTO NO EXTERIOR","") for txt in idx]
+    idx=[txt.replace(" FUNDO DE INVESTIMENTO EM AÇÕES","") for txt in idx]
+    idx=[txt.replace(" FUNDO DE INVESTIMENTO MULTIMERCADO","") for txt in idx]
+    idx=[txt.replace(" FUNDOS DE INVESTIMENTO MULTIMERCADO","") for txt in idx]
+    idx=[txt.replace(" FUNDO DE INVESTIMENTO EM COTAS","") for txt in idx]
+    idx=[txt.replace(" CRÉDITO PRIVADO","") for txt in idx]
+    idx=[txt.replace(" FUNDO DE INVESTIMENTO","") for txt in idx]
+    idx=[txt.replace(" DE AÇÕES","") for txt in idx]
+    idx=[txt.replace(" DE ACOES","") for txt in idx]
+    idx=[txt.replace(" FUNDO DE","") for txt in idx]
     pivot_table.index=pd.Index(idx )
     fundos_na_carteira = pivot_table[pivot_table>0].count()
     investidores_no_fundo = pivot_table[pivot_table>0].count(axis=1)
@@ -67,7 +63,7 @@ def make_heatmap(fund:str, df:pd.DataFrame):
         [1, "#2C4257"]
     ]
 
-    heatmap= data=go.Heatmap(
+    heatmap = go.Heatmap(
                         z=pivot_table.transpose(),
                         y=pivot_table.columns,
                         x=pivot_table.index,
